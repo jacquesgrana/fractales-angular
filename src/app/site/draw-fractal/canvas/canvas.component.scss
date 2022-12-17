@@ -1,0 +1,8 @@
+@import "src/library";
+@import "src/theme";
+
+#canvas {
+  border: $components-border-thickness solid black;
+  margin: 40px;
+  margin-right:40px;
+}

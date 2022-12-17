@@ -1,0 +1,31 @@
+@import "src/library";
+@import "src/theme";
+
+.body-container {
+  background-color: $components-background-color;
+  height: 10vh;
+  min-width: 100%;
+  color: $components-background-color-accent;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  display: flex;
+  justify-content: center;
+  border-top: $components-border-thickness solid black;
+}
+
+.flex-end {
+  align-self: flex-end;
+}
+
+.block-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-link {
+  text-decoration: none;
+}

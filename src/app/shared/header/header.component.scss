@@ -1,0 +1,31 @@
+@import "src/library";
+@import "src/theme";
+
+mat-toolbar {
+  margin: 0;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.6rem !important;
+}
+
+.body-container {
+  display: flex;
+  justify-content: flex-start;
+  background-color: $components-background-color;
+  min-width: 100%;
+  height: 12vh;
+  color: $components-background-color-accent;
+  padding-bottom: 0.5rem;
+  border-bottom: $components-border-thickness solid black;
+}
+
+.div-title {
+  margin-top: 0rem;
+}
+
+.menu-icon {
+  margin-top: 1rem;
+  transform: scale(2);
+}

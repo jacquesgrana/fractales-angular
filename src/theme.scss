@@ -1,0 +1,34 @@
+@import "~@angular/material/theming";
+@include mat-core();
+
+$components-primary-palette: mat-palette($mat-indigo, 800);
+$components-accent-palette: mat-palette($mat-orange, 800);
+$components-warn-palette: mat-palette($mat-red, 800);
+
+$components-text-family: mat-typography-config($font-family: Roboto);
+$components-theme: mat-light-theme($components-primary-palette, $components-accent-palette, $components-warn-palette);
+@include angular-material-theme($components-theme);
+@include angular-material-typography($components-text-family);
+
+$components-background-color: mat-color($components-primary-palette, 800);
+$components-background-color-ter: mat-color($components-primary-palette, 600);
+$components-foreground-color-accent: mat-color($components-accent-palette, 800);
+$components-background-color-accent: mat-color($components-accent-palette, 200);
+$components-background-color-bis: mat-color($components-primary-palette, 400);
+$components-foreground-color: mat-color($components-primary-palette, 800);
+$components-foreground-color-warn: mat-color($components-warn-palette, 800);
+
+$components-border-thickness: 2px;
+$components-border-radius: 10px;
+
+.text-color-accent {
+  color: $components-background-color-accent;
+}
+
+.text-color-warn {
+  color: $components-foreground-color-warn;
+}
+
+.text-color-primary {
+  color: $components-foreground-color;
+}
