@@ -52,15 +52,16 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.canvas.nativeElement.height = this.canvasService.canvasHeight;
       //console.log('canvas width : ', this.canvas.nativeElement.width, 'canvas height : ', this.canvas.nativeElement.height);
 
-      this.canvasService.context.fillStyle = this.canvasService.backgroundColor;
-      this.canvasService.context.fillRect(0, 0, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
+      //this.canvasService.context.fillStyle = this.canvasService.backgroundColor;
+      //this.canvasService.context.fillRect(0, 0, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
 
       //console.log('context non null');
 
 
-      this.canvasService.currentScene.updateMatrix();
+      //this.canvasService.currentScene.updateMatrix();
 
-      this.drawFractal();
+      this.updateCanvas();
+      //this.drawFractal();
       //this.drawAxes();
       /*
             this.canvasService.imageData = this.canvasService.context.createImageData(this.canvasService.canvasWidth, this.canvasService.canvasHeight);
@@ -81,10 +82,24 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   }
 
+  updateCanvas(): void {
+    this.canvasService.currentScene.updateMatrix();
+    this.canvasService.isFractalDisplayed ? this.drawFractal() : this.drawBlank();
+    if(this.canvasService.isAxesDisplayed)  this.drawAxes();
+  }
+
+  drawBlank(): void {
+    //this.canvasService.updateTabToDraw();
+    this.canvasService.initImageData();
+    //this.canvasService.loadImageFromTab();
+    this.canvasService.context.imageSmoothingQuality = "high";
+    this.canvasService.context.putImageData(this.canvasService.imageData, 0, 0);
+  }
+
   drawAxes() {
     // TODO a finir
-    let originPt = new Point(0.0, 0.0);
-    let originPx = GraphicLibrary.calcPixelFromPoint(originPt, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
+    const originPt = new Point(0.0, 0.0);
+    const originPx = GraphicLibrary.calcPixelFromPoint(originPt, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
     //this.canvasService.context.fillStyle = this.canvasService.originColor;
     //console.log("origine :", originPx.toString());
     //console.log("current scene :", this.canvasService.currentScene);
@@ -94,42 +109,68 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
     //originPx.getI(), originPx.getJToDraw(sizeJZone), 20
     this.canvasService.context.beginPath();
-    this.canvasService.context.arc(originPx.getI(), originPx.getJToDraw(this.canvasService.canvasHeight), 8, 0, 2 * Math.PI, false);
+    this.canvasService.context.arc(originPx.getI(), originPx.getJToDraw(this.canvasService.canvasHeight), 8, 0, 2 * Math.PI, true);
     //this.canvasService.context.fillStyle = this.canvasService.originColor;
     //this.canvasService.context.fill();
     this.canvasService.context.lineWidth = 1;
     this.canvasService.context.strokeStyle = this.canvasService.axesColor;
     this.canvasService.context.stroke();
 
-    let startXAxe = new Point(this.canvasService.currentScene.getMinX(), 0);
-    let endXAxe = new Point(this.canvasService.currentScene.getMinX() + this.canvasService.currentScene.getRangeX(), 0);
-    let startXAxePix = GraphicLibrary.calcPixelFromPoint(startXAxe, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
-    let endXAxePix = GraphicLibrary.calcPixelFromPoint(endXAxe, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
+    const vectorIPoint = new Point(1,0);
+    const vectorIPix = GraphicLibrary.calcPixelFromPoint(vectorIPoint, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
+    const vectorIOppPoint = new Point(-1,0);
+    const vectorIOppPix = GraphicLibrary.calcPixelFromPoint(vectorIOppPoint, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
 
     this.canvasService.context.beginPath();
-    this.canvasService.context.moveTo(startXAxePix.getI(), startXAxePix.getJToDraw(this.canvasService.canvasHeight));
-    this.canvasService.context.lineTo(endXAxePix.getI(), endXAxePix.getJToDraw(this.canvasService.canvasHeight));
+    this.canvasService.context.arc(vectorIPix.getI(), vectorIPix.getJToDraw(this.canvasService.canvasHeight), 4, 0, 2 * Math.PI, true);
+    this.canvasService.context.fillStyle = this.canvasService.originColor;
+    this.canvasService.context.fill();
+    this.canvasService.context.lineWidth = 1;
+    this.canvasService.context.strokeStyle = this.canvasService.axesColor;
+    this.canvasService.context.stroke();
+
+    this.canvasService.context.beginPath();
+    this.canvasService.context.moveTo(vectorIOppPix.getI(), vectorIOppPix.getJToDraw(this.canvasService.canvasHeight));
+    this.canvasService.context.lineTo(vectorIPix.getI(), vectorIPix.getJToDraw(this.canvasService.canvasHeight));
     this.canvasService.context.strokeStyle = this.canvasService.axesColor;
     this.canvasService.context.lineWidth = 1;
     this.canvasService.context.stroke();
 
-    let startYAxe = new Point(0, this.canvasService.currentScene.getMinY());
-    let endYAxe = new Point(0, this.canvasService.currentScene.getMinY() + this.canvasService.currentScene.getRangeY());
-    let startYAxePix = GraphicLibrary.calcPixelFromPoint(startYAxe, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
-    let endYAxePix = GraphicLibrary.calcPixelFromPoint(endYAxe, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
+    const vectorJPoint = new Point(0,1);
+    const vectorJPix = GraphicLibrary.calcPixelFromPoint(vectorJPoint, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
+    const vectorJOppPoint = new Point(0,-1);
+    const vectorJOppPix = GraphicLibrary.calcPixelFromPoint(vectorJOppPoint, this.canvasService.currentScene, this.canvasService.canvasWidth, this.canvasService.canvasHeight);
 
     this.canvasService.context.beginPath();
-    this.canvasService.context.moveTo(startYAxePix.getI(), startYAxePix.getJToDraw(this.canvasService.canvasHeight));
-    this.canvasService.context.lineTo(endYAxePix.getI(), endYAxePix.getJToDraw(this.canvasService.canvasHeight));
+    this.canvasService.context.arc(vectorJPix.getI(), vectorJPix.getJToDraw(this.canvasService.canvasHeight), 4, 0, 2 * Math.PI, true);
+    this.canvasService.context.fillStyle = this.canvasService.originColor;
+    this.canvasService.context.fill();
+    this.canvasService.context.lineWidth = 1;
+    this.canvasService.context.strokeStyle = this.canvasService.axesColor;
+    this.canvasService.context.stroke();
+
+    this.canvasService.context.beginPath();
+    this.canvasService.context.moveTo(vectorJOppPix.getI(), vectorJOppPix.getJToDraw(this.canvasService.canvasHeight));
+    this.canvasService.context.lineTo(vectorJPix.getI(), vectorJPix.getJToDraw(this.canvasService.canvasHeight));
     this.canvasService.context.strokeStyle = this.canvasService.axesColor;
     this.canvasService.context.lineWidth = 1;
     this.canvasService.context.stroke();
+
+    const radius: number = originPx.calcDist(vectorIPix); // TODO a modifier --> calculer plutot la distance // Math.abs(vectorIPix.getI() - originPx.getI());
+    //console.log('radius :', radius);
+    this.canvasService.context.beginPath();
+    this.canvasService.context.arc(originPx.getI(), originPx.getJToDraw(this.canvasService.canvasHeight), radius, 0, 2 * Math.PI, true);
+    this.canvasService.context.lineWidth = 1;
+    this.canvasService.context.strokeStyle = this.canvasService.axesColor;
+    this.canvasService.context.stroke();
+
   }
 
   drawFractal(): void {
     this.canvasService.updateTabToDraw();
     this.canvasService.initImageData();
     this.canvasService.loadImageFromTab();
+    this.canvasService.context.imageSmoothingQuality = "high";
     this.canvasService.context.putImageData(this.canvasService.imageData, 0, 0);
   }
 
@@ -156,65 +197,65 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     switch (event.key) {
 
       case 'ArrowLeft':
-        console.log('touche gauche');
+        //console.log('touche gauche');
         Tx = this.canvasService.currentScene.getTrans().getX() + 0.05 * this.canvasService.currentScene.getRangeX();
         this.canvasService.currentScene.getTrans().setX(Tx);
-        this.canvasService.currentScene.updateMatrix();
-        this.drawFractal();
-        //this.drawAxes();
+        //this.canvasService.currentScene.updateMatrix();
+        this.updateCanvas();
         break;
       case 'ArrowRight':
-        console.log('touche droit');
+        //console.log('touche droit');
         Tx = this.canvasService.currentScene.getTrans().getX() - 0.05 * this.canvasService.currentScene.getRangeX();
         this.canvasService.currentScene.getTrans().setX(Tx);
-        this.canvasService.currentScene.updateMatrix();
-        this.drawFractal();
-        //this.drawAxes();
+        //this.canvasService.currentScene.updateMatrix();
+        this.updateCanvas();
         break;
       case 'ArrowUp':
-        console.log('touche haut');
+        //console.log('touche haut');
         Ty = this.canvasService.currentScene.getTrans().getY() - 0.05 * this.canvasService.currentScene.getRangeY();
         this.canvasService.currentScene.getTrans().setY(Ty);
-        this.canvasService.currentScene.updateMatrix();
-        this.drawFractal();
-        //this.drawAxes();
+        //this.canvasService.currentScene.updateMatrix();
+        this.updateCanvas();
         break;
       case 'ArrowDown':
-        console.log('touche bas');
+        //console.log('touche bas');
         Ty = this.canvasService.currentScene.getTrans().getY() + 0.05 * this.canvasService.currentScene.getRangeY();
         this.canvasService.currentScene.getTrans().setY(Ty);
-        this.canvasService.currentScene.updateMatrix();
-        this.drawFractal();
-        //this.drawAxes();
+        //this.canvasService.currentScene.updateMatrix();
+        this.updateCanvas();
         break;
       case 'a':
-        console.log('touche a');
-        this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() + 5.0);
-        this.canvasService.currentScene.updateMatrix();
-        this.drawFractal();
-        //this.drawAxes();
+        //console.log('touche a');
+        this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() - 5.0);
+        //this.canvasService.currentScene.updateMatrix();
+        this.updateCanvas();
         break;
       case 'z':
-        console.log('touche z');
-        this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() - 5.0);
-        this.canvasService.currentScene.updateMatrix();
-        this.drawFractal();
-        //this.drawAxes();
+        //console.log('touche z');
+        this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() + 5.0);
+        //this.canvasService.currentScene.updateMatrix();
+        this.updateCanvas();
         break;
       case 'q':
-        console.log('touche q');
-        this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 0.95);
-        this.canvasService.currentScene.updateMatrix();
-        this.drawFractal();
-        //this.drawAxes();
+        //console.log('touche q');
+        this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 1.05);
+        //this.canvasService.currentScene.updateMatrix();
+        this.updateCanvas();
         break;
       case 's':
-        console.log('touche s');
-        this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 1.05);
-        this.canvasService.currentScene.updateMatrix();
-        this.drawFractal();
-        //this.drawAxes();
+        //console.log('touche s');
+        this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 0.95);
+        //this.canvasService.currentScene.updateMatrix();
+        this.updateCanvas();
         break;
+        case 'f':
+          this.canvasService.isFractalDisplayed = !this.canvasService.isFractalDisplayed;
+          this.updateCanvas();
+          break;
+          case 'd':
+          this.canvasService.isAxesDisplayed = !this.canvasService.isAxesDisplayed;
+          this.updateCanvas();
+          break;
     }
   }
 

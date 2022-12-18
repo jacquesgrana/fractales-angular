@@ -22,9 +22,9 @@ export class CanvasService {
   public canvas!: ElementRef;
   public context!: CanvasRenderingContext2D;
 
-  public backgroundColor: string = 'rgb(40,40,40)';
-  public axesColor: string = 'rgba(230,230,230,62)';
-  public originColor: string = 'rgba(240,240,240,62)';
+  public backgroundColor: string = 'rgba(20,20,20,1.0)';
+  public axesColor: string = 'rgba(255,255,255,0.38)';
+  public originColor: string = 'rgba(255,255,255,0.62)';
 
   public currentScene!: Scene;
   public trans!: Point;
@@ -33,9 +33,33 @@ export class CanvasService {
 
   public fractal!: JuliaFractal;
 
+  public isFractalDisplayed: boolean = true;
+  public isAxesDisplayed: boolean = true;
+
+
   constructor() {
-    this.fractal = new JuliaFractal(new ComplexNb(true, -0.4, -0.59), 2, 150);
-   }
+    //new JuliaFractal(new ComplexNb("Cart", 0.355534, -0.337292), limitModule, 1000);
+    //this.fractal = new JuliaFractal(new ComplexNb(true, -0.4, -0.59), 2, 150);
+    this.fractal = new JuliaFractal(new ComplexNb(true, 0.355, 0.355), 2, 100);
+  }
+  /**
+   * let tabFractal = new Array(fractalNb);
+    tabFractal[0] = new JuliaFractal(new ComplexNb("Cart", -0.4, -0.59), limitModule, 150);
+    tabFractal[1] = new JuliaFractal(new ComplexNb("Cart", 0.355534, -0.337292), limitModule, 1000);
+    tabFractal[2] = new JuliaFractal(new ComplexNb("Cart", -0.4, -0.59), limitModule, 100);
+    tabFractal[3] = new JuliaFractal(new ComplexNb("Cart", -0.54, 0.54), limitModule, 100);
+    tabFractal[4] = new JuliaFractal(new ComplexNb("Cart", 0.355, 0.355), limitModule, 100);
+    tabFractal[5] = new JuliaFractal(new ComplexNb("Cart", -0.7, 0.27015), limitModule, 200);
+    tabFractal[6] = new JuliaFractal(new ComplexNb("Cart", 0.285, 0.01), limitModule, 75);
+    tabFractal[7] = new JuliaFractal(new ComplexNb("Cart", -1.417022285618, 0.0099534), limitModule, 20);
+    tabFractal[8] = new JuliaFractal(new ComplexNb("Cart", -0.038088, 0.9754633), limitModule, 20);
+    tabFractal[9] = new JuliaFractal(new ComplexNb("Cart", 0.285, 0.013 ), limitModule, 200);
+    tabFractal[10] = new JuliaFractal(new ComplexNb("Cart", -0.4, 0.6 ), limitModule, 100);
+    tabFractal[11] = new JuliaFractal(new ComplexNb("Cart", -0.8, 0.156 ), limitModule, 150);
+    tabFractal[12] = new JuliaFractal(new ComplexNb("Cart", 0.0, 0.8), limitModule, 25);
+    tabFractal[13] = new JuliaFractal(new ComplexNb("Cart", 0.3, 0.5), limitModule, 50);
+    tabFractal[14] = new JuliaFractal(new ComplexNb("Cart", -0.8, 0.0), limitModule, 200);
+   */
 
   public initService(): void {
     this.initTabToDraw();
@@ -72,12 +96,15 @@ export class CanvasService {
     let pix = new Pixel(0, 0);
     for (let i=0; i<this.canvasWidth; i++) {
       for (let j=0; j<this.canvasHeight; j++) {
+
         pix.setI(i);
         pix.setJ(j);
+        //pix.setJ(pix.getJToDraw(this.canvasHeight));
         let pointM = GraphicLibrary.calcPointFromPix(pix, this.currentScene, this.canvasWidth, this.canvasHeight);
         let z = new ComplexNb(true, pointM.getX(), pointM.getY());
         let colorPt = this.fractal.calcColorFromJuliaFractal(z, 3, 2, this.backgroundColor);
-        this.tabToDraw[i][j] = colorPt;
+        //let realPix = new Pixel(pix.getI(), pix.getJToDraw(this.canvasHeight));
+        this.tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
         //console.log('color : i :', i, ':', j, ':', colorPt);
 
       }

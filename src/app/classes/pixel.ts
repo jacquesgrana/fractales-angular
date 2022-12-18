@@ -36,4 +36,8 @@ export class Pixel {
   toString(): string {
    return "i : " + this.i + " / j : " + this.j;
   }
+
+  calcDist(endPixel: Pixel): number {
+    return Math.sqrt((endPixel.getI() - this.getI())*(endPixel.getI() - this.getI()) + (endPixel.getJ() - this.getJ())*(endPixel.getJ() - this.getJ()));
+  }
  }
