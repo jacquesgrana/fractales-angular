@@ -6,3 +6,10 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+.mat-form-field-underline .form-field, ::ng-deep .mat-form-field-ripple {
+  background-color:$components-background-color-bis !important;
+  color: $components-foreground-color-accent;
+}

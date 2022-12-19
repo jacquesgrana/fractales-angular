@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { Matrix } from 'src/app/classes/matrix';
 import { Pixel } from 'src/app/classes/pixel';
@@ -60,7 +60,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
       //this.canvasService.currentScene.updateMatrix();
 
-      this.updateCanvas();
+      this.canvasService.updateDisplay();
       //this.drawFractal();
       //this.drawAxes();
       /*
@@ -81,12 +81,14 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     }
 
   }
-
+/*
   updateCanvas(): void {
     this.canvasService.currentScene.updateMatrix();
-    this.canvasService.isFractalDisplayed ? this.drawFractal() : this.drawBlank();
-    if(this.canvasService.isAxesDisplayed)  this.drawAxes();
-  }
+    this.canvasService.isFractalDisplayed ? this.canvasService.drawFractal() : this.canvasService.drawBlank();
+    if(this.canvasService.isAxesDisplayed)  this.canvasService.drawAxes();
+  }*/
+
+  /*
 
   drawBlank(): void {
     //this.canvasService.updateTabToDraw();
@@ -173,6 +175,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     this.canvasService.context.imageSmoothingQuality = "high";
     this.canvasService.context.putImageData(this.canvasService.imageData, 0, 0);
   }
+  */
 
   updateCanvasDimensions() {
     let element = document.getElementById('block-container');
@@ -188,75 +191,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     //console.log('canvas width :', this.canvasService.canvasWidth, ' canvas height :', this.canvasService.canvasHeight);
     //console.log('ctx canvas width :', this.context.canvas.clientWidth, ' ctx canvas height :', this.context.canvas.clientHeight);
 
-  }
-
-  @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvents(event: KeyboardEvent) {
-    let Tx: number = 0;
-    let Ty: number = 0;
-    switch (event.key) {
-
-      case 'ArrowLeft':
-        //console.log('touche gauche');
-        Tx = this.canvasService.currentScene.getTrans().getX() + 0.05 * this.canvasService.currentScene.getRangeX();
-        this.canvasService.currentScene.getTrans().setX(Tx);
-        //this.canvasService.currentScene.updateMatrix();
-        this.updateCanvas();
-        break;
-      case 'ArrowRight':
-        //console.log('touche droit');
-        Tx = this.canvasService.currentScene.getTrans().getX() - 0.05 * this.canvasService.currentScene.getRangeX();
-        this.canvasService.currentScene.getTrans().setX(Tx);
-        //this.canvasService.currentScene.updateMatrix();
-        this.updateCanvas();
-        break;
-      case 'ArrowUp':
-        //console.log('touche haut');
-        Ty = this.canvasService.currentScene.getTrans().getY() - 0.05 * this.canvasService.currentScene.getRangeY();
-        this.canvasService.currentScene.getTrans().setY(Ty);
-        //this.canvasService.currentScene.updateMatrix();
-        this.updateCanvas();
-        break;
-      case 'ArrowDown':
-        //console.log('touche bas');
-        Ty = this.canvasService.currentScene.getTrans().getY() + 0.05 * this.canvasService.currentScene.getRangeY();
-        this.canvasService.currentScene.getTrans().setY(Ty);
-        //this.canvasService.currentScene.updateMatrix();
-        this.updateCanvas();
-        break;
-      case 'a':
-        //console.log('touche a');
-        this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() - 5.0);
-        //this.canvasService.currentScene.updateMatrix();
-        this.updateCanvas();
-        break;
-      case 'z':
-        //console.log('touche z');
-        this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() + 5.0);
-        //this.canvasService.currentScene.updateMatrix();
-        this.updateCanvas();
-        break;
-      case 'q':
-        //console.log('touche q');
-        this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 1.05);
-        //this.canvasService.currentScene.updateMatrix();
-        this.updateCanvas();
-        break;
-      case 's':
-        //console.log('touche s');
-        this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 0.95);
-        //this.canvasService.currentScene.updateMatrix();
-        this.updateCanvas();
-        break;
-        case 'f':
-          this.canvasService.isFractalDisplayed = !this.canvasService.isFractalDisplayed;
-          this.updateCanvas();
-          break;
-          case 'd':
-          this.canvasService.isAxesDisplayed = !this.canvasService.isAxesDisplayed;
-          this.updateCanvas();
-          break;
-    }
   }
 
 }

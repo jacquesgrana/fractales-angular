@@ -1,8 +1,79 @@
 <div class="body-container">
-  <section class="block-container container" id="block-container">
+  <section class="block-container" id="block-container">
     <app-canvas></app-canvas>
-    <section class="block flex-center">
-      
+    <mat-progress-bar mode="determinate" [value]="(canvasService.calcFractalProgressObs$ | async) || 0"
+      class=""></mat-progress-bar>
+    <!-- (canvasService.calcFractalProgressObs$ | async) || 0 canvasService.calcFractalProgress -->
+    <section class="block">
+      <div class="div-row">
+        <button mat-flat-button color="primary" class="button-gen"
+          (click)="toggleFractalDisplay()"><mat-icon>{{canvasService.isFractalDisplayed ? "visibility_off" :
+            "visibility_on"}}</mat-icon> {{canvasService.isFractalDisplayed ? "Masquer la fractale" : "Afficher la fractale"}}</button>
+        <button mat-flat-button color="primary" class="button-gen"
+          (click)="toggleAxesDisplay()"><mat-icon>{{canvasService.isAxesDisplayed ? "visibility_off" :
+            "visibility_on"}}</mat-icon> {{canvasService.isAxesDisplayed ? "Masquer les axes" : "Afficher les axes"}}</button>
+        <button mat-flat-button color="primary" class="button-gen"
+          (click)="toggleSettingsDisplay()"><mat-icon>{{canvasService.isSettingsDisplayed ? "visibility_off" :
+            "visibility_on"}}</mat-icon> {{canvasService.isSettingsDisplayed ? "Masquer les réglages" : "Afficher les réglages"}}</button>
+      </div>
+      <div *ngIf="canvasService.isSettingsDisplayed" class="div-row-settings flex-center">
+        <h3 class="text-color-white div-row-title">Réglages : Seed : ({{canvasService.real}}) + i x ({{canvasService.imag}})</h3>
+        <div class="div-row-2">
+          <mat-form-field appearance="outline" color="warn" class="form-field">
+          <mat-label>Choisir une fractale</mat-label>
+          <mat-select [(ngModel)]="canvasService.fractal" (selectionChange)="canvasService.changeFractal()">
+            <mat-option *ngFor="let fractal of canvasService.fractals" [value]="fractal">{{fractal.getName()}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        </div>
+
+        <div class="div-row-2">
+
+          <mat-form-field appearance="outline" color="warn" class="form-field">
+            <mat-label for="real" class="label">Partie réelle</mat-label>
+            <input matInput type="number" min="-4" max="4" step="0.001" name="real" [(ngModel)]="canvasService.real" class="input">
+
+            <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
+            <mat-slider min="-4" max="4" step="0.001" [thumbLabel]="true" [(ngModel)]="canvasService.real" discrete
+              class="slider"> <!-- [displayWith]="formatLabel" -->
+              <!--<input matSliderThumb>-->
+            </mat-slider>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" color="warn" class="form-field">
+            <mat-label for="imag" class="label">Partie imaginaire</mat-label>
+            <input matInput type="number" min="-4" max="4" step="0.001" name="imag" [(ngModel)]="canvasService.imag" class="input">
+
+            <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
+            <mat-slider min="-4" max="4" step="0.001" [thumbLabel]="true" [(ngModel)]="canvasService.imag" discrete
+              class="slider"> <!-- [displayWith]="formatLabel" -->
+              <!--<input matSliderThumb>-->
+            </mat-slider>
+          </mat-form-field>
+          <mat-form-field appearance="outline" color="warn" class="form-field">
+            <mat-label for="limit" class="label">Limite</mat-label>
+            <input matInput type="number" min="0" max="10" step="0.1" name="limit" [(ngModel)]="canvasService.limit" class="input">
+
+            <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
+            <mat-slider min="0" max="10" step="0.1" [thumbLabel]="true" [(ngModel)]="canvasService.limit" discrete
+              class="slider"> <!-- [displayWith]="formatLabel" -->
+              <!--<input matSliderThumb>-->
+            </mat-slider>
+          </mat-form-field>
+          <mat-form-field appearance="outline" color="warn" class="form-field">
+            <mat-label for="iterNb" class="label">Nombre maximum d'itérations</mat-label>
+            <input matInput type="number" min="5" max="1000" step="5" name="iterNb" [(ngModel)]="canvasService.iterNb" class="input">
+
+            <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
+            <mat-slider min="5" max="1000" step="5" [thumbLabel]="true" [(ngModel)]="canvasService.iterNb" discrete
+              class="slider"> <!-- [displayWith]="formatLabel" -->
+              <!--<input matSliderThumb>-->
+            </mat-slider>
+          </mat-form-field>
+        </div>
+        <button mat-flat-button color="primary" class="button-gen"
+          (click)="canvasService.uptadeFractal()"><mat-icon>validate</mat-icon>Appliquer les modifications</button>
+      </div>
     </section>
   </section>
 </div>

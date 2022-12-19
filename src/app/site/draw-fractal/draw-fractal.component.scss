@@ -27,22 +27,114 @@
 }
 
 .button-gen {
-  max-width: 150px;
   margin: auto;
   height: 60px;
+  width: 250px;
   margin-top: 1rem;
+  margin-bottom: 1rem;
   border: $components-border-thickness solid black;
   border-radius: $components-border-radius;
 }
 
-.block{
+.div-row {
+  display: flex;
+  justify-content: center;
+  //gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.div-row-settings {
+  display: flex;
   flex-wrap: wrap;
   width: auto;
+  flex-direction: column;
+  justify-content:center;
+}
+
+.div-row-2 {
+  display: flex;
+  justify-content:center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.div-row-title {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.block {
+  display: flex;
+  flex-wrap: wrap;
+  width: auto;
+  flex-direction: column;
+  justify-content:center;
+  //gap: 1rem;
   min-height: 100px;
-  margin-left: 2rem;
-  margin-right: 2rem;
-  margin-bottom: 2rem;
+  margin: 2rem;
   background-color: $components-background-color-ter;
   border: $components-border-thickness solid black;
   border-radius: $components-border-radius;
+  padding-bottom: 1rem;
 }
+
+.form-field {
+  min-width: 360px;
+  max-width: 800px;
+  //background-color: $components-background-color-bis;
+}
+
+/*
+::ng-deep .mat-form-field-underline .form-field, ::ng-deep .mat-form-field-ripple {
+  background-color:$components-background-color-bis !important;
+  color: $components-foreground-color-warn;
+}
+*/
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  background-color: $components-background-color-bis;
+  color: $components-foreground-color;
+  border-radius: 5px;
+}
+
+.label {
+  font-size: 1.4rem;
+}
+
+.input {
+  min-width: 300px;
+  max-width: 400px;
+  height: 40px;
+  font-size: 1.6rem;
+}
+
+.slider {
+  min-width: 340px;
+  max-width: 340px;
+}
+
+
+::ng-deep .mat-form-field {
+  //background-color:$components-background-color-bis !important;
+  .mat-input-element {
+      color: $components-foreground-color;
+      background-color: $components-background-color-bis;
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+  }
+  .mat-form-field-label {
+      color: $components-foreground-color;
+  }
+  .mat-form-field-underline {
+      background-color: $components-foreground-color;
+  }
+  .mat-form-field-ripple {
+      background-color: $components-background-color-accent;
+  }
+  .mat-form-field-required-marker {
+      color: $components-background-color-accent;
+  }
+}
+

@@ -22,10 +22,11 @@
 }
 
 .button-gen {
-  max-width: 150px;
   margin: auto;
   height: 60px;
+  width: 250px;
   margin-top: 1rem;
+  margin-bottom: 1rem;
   border: $components-border-thickness solid black;
   border-radius: $components-border-radius;
 }

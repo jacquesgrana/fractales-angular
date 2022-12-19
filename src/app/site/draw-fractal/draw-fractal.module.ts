@@ -4,6 +4,9 @@ import { DrawFractalComponent } from './draw-fractal.component';
 import { MaterialModule } from 'src/app/material-module';
 import { RouterModule } from '@angular/router';
 import { CanvasComponent } from './canvas/canvas.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -13,7 +16,11 @@ import { CanvasComponent } from './canvas/canvas.component';
   imports: [
     CommonModule,
     MaterialModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   exports: [
     CanvasComponent
