@@ -16,22 +16,25 @@
           (click)="toggleSettingsDisplay()"><mat-icon>{{canvasService.isSettingsDisplayed ? "visibility_off" :
             "visibility_on"}}</mat-icon> {{canvasService.isSettingsDisplayed ? "Masquer les réglages" : "Afficher les réglages"}}</button>
       </div>
-      <div *ngIf="canvasService.isSettingsDisplayed" class="div-row-settings flex-center">
-        <h3 class="text-color-white div-row-title">Réglages : Seed : ({{canvasService.real}}) + i x ({{canvasService.imag}})</h3>
+      <div [hidden]="!canvasService.isSettingsDisplayed" class="div-row-settings flex-center">
+        <h3 class="text-color-white div-row-title">Réglages : Seed : ({{canvasService.real}}) + i x
+          ({{canvasService.imag}})</h3>
         <div class="div-row-2">
           <mat-form-field appearance="outline" color="warn" class="form-field">
-          <mat-label>Choisir une fractale</mat-label>
-          <mat-select [(ngModel)]="canvasService.fractal" (selectionChange)="canvasService.changeFractal()">
-            <mat-option *ngFor="let fractal of canvasService.fractals" [value]="fractal">{{fractal.getName()}}</mat-option>
-          </mat-select>
-        </mat-form-field>
+            <mat-label>Choisir une fractale</mat-label>
+            <mat-select [(ngModel)]="canvasService.fractal" (selectionChange)="canvasService.changeFractal()">
+              <mat-option *ngFor="let fractal of canvasService.fractals"
+                [value]="fractal">{{fractal.getName()}}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
         <div class="div-row-2">
 
           <mat-form-field appearance="outline" color="warn" class="form-field">
             <mat-label for="real" class="label">Partie réelle</mat-label>
-            <input matInput type="number" min="-4" max="4" step="0.001" name="real" [(ngModel)]="canvasService.real" class="input">
+            <input matInput type="number" min="-4" max="4" step="0.001" name="real" [(ngModel)]="canvasService.real"
+              class="input">
 
             <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
             <mat-slider min="-4" max="4" step="0.001" [thumbLabel]="true" [(ngModel)]="canvasService.real" discrete
@@ -42,7 +45,8 @@
 
           <mat-form-field appearance="outline" color="warn" class="form-field">
             <mat-label for="imag" class="label">Partie imaginaire</mat-label>
-            <input matInput type="number" min="-4" max="4" step="0.001" name="imag" [(ngModel)]="canvasService.imag" class="input">
+            <input matInput type="number" min="-4" max="4" step="0.001" name="imag" [(ngModel)]="canvasService.imag"
+              class="input">
 
             <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
             <mat-slider min="-4" max="4" step="0.001" [thumbLabel]="true" [(ngModel)]="canvasService.imag" discrete
@@ -52,7 +56,8 @@
           </mat-form-field>
           <mat-form-field appearance="outline" color="warn" class="form-field">
             <mat-label for="limit" class="label">Limite</mat-label>
-            <input matInput type="number" min="0" max="10" step="0.1" name="limit" [(ngModel)]="canvasService.limit" class="input">
+            <input matInput type="number" min="0" max="10" step="0.1" name="limit" [(ngModel)]="canvasService.limit"
+              class="input">
 
             <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
             <mat-slider min="0" max="10" step="0.1" [thumbLabel]="true" [(ngModel)]="canvasService.limit" discrete
@@ -62,7 +67,8 @@
           </mat-form-field>
           <mat-form-field appearance="outline" color="warn" class="form-field">
             <mat-label for="iterNb" class="label">Nombre maximum d'itérations</mat-label>
-            <input matInput type="number" min="5" max="1000" step="5" name="iterNb" [(ngModel)]="canvasService.iterNb" class="input">
+            <input matInput type="number" min="5" max="1000" step="5" name="iterNb" [(ngModel)]="canvasService.iterNb"
+              class="input">
 
             <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
             <mat-slider min="5" max="1000" step="5" [thumbLabel]="true" [(ngModel)]="canvasService.iterNb" discrete
@@ -70,6 +76,24 @@
               <!--<input matSliderThumb>-->
             </mat-slider>
           </mat-form-field>
+
+        </div>
+        <h4 class="text-center">Réglage des couleurs</h4>
+        <div class="div-row-2">
+          <div class="column">
+            <h5 class="text-center">Couleur de début</h5>
+            <mat-slider [min]="0" [max]="canvasService.gradientEnd - 1" [step]="1" [tickInterval]="1"
+              [thumbLabel]="true" [(ngModel)]="canvasService.gradientStart" class="slider" (ngModelChange)="updateGradients()">
+            </mat-slider>
+            <canvas #canvasStart id="canvasStart" width="340px" height="8px"></canvas>
+          </div>
+          <div class="column">
+            <h5 class="text-center">Couleur de fin</h5>
+            <mat-slider [min]="canvasService.gradientStart + 1" [max]="6" [step]="1" [tickInterval]="1"
+              [thumbLabel]="true" [(ngModel)]="canvasService.gradientEnd" class="slider" (ngModelChange)="updateGradients()">
+            </mat-slider>
+            <canvas #canvasEnd id="canvasEnd" width="340px" height="8px"></canvas>
+          </div>
         </div>
         <button mat-flat-button color="primary" class="button-gen"
           (click)="canvasService.uptadeFractal()"><mat-icon>validate</mat-icon>Appliquer les modifications</button>

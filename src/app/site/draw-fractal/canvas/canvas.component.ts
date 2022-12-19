@@ -1,13 +1,6 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { fromEvent, Observable, Subscription } from 'rxjs';
-import { Matrix } from 'src/app/classes/matrix';
-import { Pixel } from 'src/app/classes/pixel';
-import { Point } from 'src/app/classes/point';
-import { Scene } from 'src/app/classes/scene';
-import { GraphicLibrary } from 'src/app/libraries/graphic-library';
-import { MatrixLibrary } from 'src/app/libraries/matrix-library';
 import { CanvasService } from 'src/app/services/canvas.service';
-import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-canvas',

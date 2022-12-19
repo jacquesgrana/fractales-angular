@@ -40,6 +40,10 @@ export class CanvasService {
   public limit: number = 2;
   public iterNb: number = 100;
 
+  public gradientStart: number = 3;
+  //public gradientRange: number = 2;
+  public gradientEnd: number = 5;
+
   public isFractalDisplayed: boolean = true;
   public isAxesDisplayed: boolean = true;
   public isSettingsDisplayed: boolean= false;
@@ -150,11 +154,10 @@ export class CanvasService {
 
           pix.setI(i);
           pix.setJ(j);
-          //pix.setJ(pix.getJToDraw(this.canvasHeight));
           let pointM = GraphicLibrary.calcPointFromPix(pix, this.currentScene, this.canvasWidth, this.canvasHeight);
           let z = new ComplexNb(true, pointM.getX(), pointM.getY());
-          let colorPt = this.fractal.calcColorFromJuliaFractal(z, 3, 2, this.backgroundColor);
-          //let realPix = new Pixel(pix.getI(), pix.getJToDraw(this.canvasHeight));
+          let colorPt = this.fractal.calcColorFromJuliaFractal(z, this.gradientStart, this.gradientEnd - this.gradientStart, this.backgroundColor);
+          //let colorPt = this.fractal.calcColorFromJuliaFractal(z, 3, 2, this.backgroundColor);
           this.tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
           //console.log('color : i :', i, ':', j, ':', colorPt);
           //console.log('jobPercent :', jobPercent);
