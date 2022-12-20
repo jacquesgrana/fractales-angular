@@ -7,14 +7,14 @@
     <section class="block">
       <div class="div-row">
         <button mat-flat-button color="primary" class="button-gen"
-          (click)="toggleFractalDisplay()"><mat-icon>{{canvasService.isFractalDisplayed ? "visibility_off" :
-            "visibility_on"}}</mat-icon> {{canvasService.isFractalDisplayed ? "Masquer la fractale" : "Afficher la fractale"}}</button>
+          (click)="toggleFractalDisplay()">{{canvasService.isFractalDisplayed ? "Masquer la fractale" : "Afficher la fractale"}}&#160;<mat-icon class="text-color-accent">{{canvasService.isFractalDisplayed ? "visibility_off" :
+            "visibility_on"}}</mat-icon></button>
         <button mat-flat-button color="primary" class="button-gen"
-          (click)="toggleAxesDisplay()"><mat-icon>{{canvasService.isAxesDisplayed ? "visibility_off" :
-            "visibility_on"}}</mat-icon> {{canvasService.isAxesDisplayed ? "Masquer les axes" : "Afficher les axes"}}</button>
+          (click)="toggleAxesDisplay()">{{canvasService.isAxesDisplayed ? "Masquer les axes" : "Afficher les axes"}}&#160;<mat-icon class="text-color-accent">{{canvasService.isAxesDisplayed ? "visibility_off" :
+            "visibility_on"}}</mat-icon></button>
         <button mat-flat-button color="primary" class="button-gen"
-          (click)="toggleSettingsDisplay()"><mat-icon>{{canvasService.isSettingsDisplayed ? "visibility_off" :
-            "visibility_on"}}</mat-icon> {{canvasService.isSettingsDisplayed ? "Masquer les réglages" : "Afficher les réglages"}}</button>
+          (click)="toggleSettingsDisplay()">{{canvasService.isSettingsDisplayed ? "Masquer les réglages" : "Afficher les réglages"}}&#160;<mat-icon class="text-color-accent">{{canvasService.isSettingsDisplayed ? "visibility_off" :
+            "visibility_on"}}</mat-icon></button>
       </div>
       <div [hidden]="!canvasService.isSettingsDisplayed" class="div-row-settings flex-center">
         <h3 class="text-color-white div-row-title">Réglages : Seed : ({{canvasService.real}}) + i x
@@ -94,9 +94,13 @@
             </mat-slider>
             <canvas #canvasEnd id="canvasEnd" width="340px" height="8px"></canvas>
           </div>
+          <div class="column">
+            <h5 class="text-center">Résultat</h5>
+            <canvas #canvasResult id="canvasResult" width="340px" height="8px"></canvas>
+          </div>
         </div>
         <button mat-flat-button color="primary" class="button-gen"
-          (click)="canvasService.uptadeFractal()"><mat-icon>validate</mat-icon>Appliquer les modifications</button>
+          (click)="canvasService.uptadeFractal()">Appliquer les modifications&#160;<mat-icon class="text-color-accent">done</mat-icon></button>
       </div>
     </section>
   </section>
