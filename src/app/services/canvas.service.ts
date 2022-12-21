@@ -46,7 +46,8 @@ export class CanvasService {
 
   public isFractalDisplayed: boolean = true;
   public isAxesDisplayed: boolean = true;
-  public isSettingsDisplayed: boolean= false;
+  public isSettingsDisplayed: boolean = false;
+  public isHelpDisplayed: boolean = false;
 
   public calcFractalProgressObs$!: Subject<number>;
   public calcFractalProgress: number = 0;
@@ -147,21 +148,24 @@ export class CanvasService {
           tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
 
           let jobPercent = Math.round(100 * cpt / max);
-
-          if(jobPercent%10 === 0) {
+/*
+          if(jobPercent%20 === 0) {
             //console.log('% : ', jobPercent);
-            this.calcFractalProgressObs$.next(jobPercent);
+            //this.calcFractalProgressObs$.next(jobPercent);
+            setTimeout( () => {
+              this.calcFractalProgressObs$.next(jobPercent);
+             }, 0 );
             //this.cd.detectChanges();
-            this.cd.markForCheck();
+            //this.cd.markForCheck();
           }
-
+*/
           cpt++;
         }
       }
-      //this.calcFractalProgressObs$.next(100);
+      this.calcFractalProgressObs$.next(100);
       setTimeout( () => {
         this.calcFractalProgressObs$.next(0);
-       }, 400 );
+       }, 500 );
 
       return tabToDraw;
 
@@ -176,12 +180,13 @@ export class CanvasService {
         let red: number = parseInt(tabVal[0]);
         let green: number = parseInt(tabVal[1]);
         let blue: number = parseInt(tabVal[2]);
+        let alpha: number = parseFloat(tabVal[3]);
 
         let indice: number = (j * this.canvasWidth * 4) + (i * 4);
         this.imageData.data[indice] = red;
         this.imageData.data[indice + 1] = green;
         this.imageData.data[indice + 2] = blue;
-        this.imageData.data[indice + 3] = 255;
+        this.imageData.data[indice + 3] = Math.round(alpha*255);
       }
     }
     //this.imageData.data = this.data;
@@ -208,6 +213,7 @@ export class CanvasService {
     this.loadImageFromTab();
     this.context.imageSmoothingQuality = "high";
     this.context.putImageData(this.imageData, 0, 0);
+    if (this.isAxesDisplayed) this.drawAxes();
   }
 
 
@@ -250,71 +256,42 @@ export class CanvasService {
   }
 
   drawAxes() {
-    // TODO a finir
     const originPt = new Point(0.0, 0.0);
     const originPx = GraphicLibrary.calcPixelFromPoint(originPt, this.currentScene, this.canvasWidth, this.canvasHeight);
-    //this.canvasService.context.fillStyle = this.canvasService.originColor;
-    //console.log("origine :", originPx.toString());
-    //console.log("current scene :", this.canvasService.currentScene);
-    //console.log("width pixel :", this.canvasService.canvasWidth);
-    //console.log("height pixel :", this.canvasService.canvasHeight);
-
-
-    //originPx.getI(), originPx.getJToDraw(sizeJZone), 20
-    this.context.beginPath();
-    this.context.arc(originPx.getI(), originPx.getJToDraw(this.canvasHeight), 8, 0, 2 * Math.PI, true);
-    //this.canvasService.context.fillStyle = this.canvasService.originColor;
-    //this.canvasService.context.fill();
-    this.context.lineWidth = 1;
-    this.context.strokeStyle = this.axesColor;
-    this.context.stroke();
-
     const vectorIPoint = new Point(1, 0);
     const vectorIPix = GraphicLibrary.calcPixelFromPoint(vectorIPoint, this.currentScene, this.canvasWidth, this.canvasHeight);
     const vectorIOppPoint = new Point(-1, 0);
-    const vectorIOppPix = GraphicLibrary.calcPixelFromPoint(vectorIOppPoint, this.currentScene, this.canvasWidth, this.canvasHeight);
-
-    this.context.beginPath();
-    this.context.arc(vectorIPix.getI(), vectorIPix.getJToDraw(this.canvasHeight), 4, 0, 2 * Math.PI, true);
-    this.context.fillStyle = this.originColor;
-    this.context.fill();
-    this.context.lineWidth = 1;
-    this.context.strokeStyle = this.axesColor;
-    this.context.stroke();
-
-    this.context.beginPath();
-    this.context.moveTo(vectorIOppPix.getI(), vectorIOppPix.getJToDraw(this.canvasHeight));
-    this.context.lineTo(vectorIPix.getI(), vectorIPix.getJToDraw(this.canvasHeight));
-    this.context.strokeStyle = this.axesColor;
-    this.context.lineWidth = 1;
-    this.context.stroke();
-
     const vectorJPoint = new Point(0, 1);
-    const vectorJPix = GraphicLibrary.calcPixelFromPoint(vectorJPoint, this.currentScene, this.canvasWidth, this.canvasHeight);
     const vectorJOppPoint = new Point(0, -1);
-    const vectorJOppPix = GraphicLibrary.calcPixelFromPoint(vectorJOppPoint, this.currentScene, this.canvasWidth, this.canvasHeight);
+    this.drawLine(vectorIPoint, vectorIOppPoint, 1, this.axesColor, this.context);
+    this.drawLine(vectorJPoint, vectorJOppPoint, 1, this.axesColor, this.context);
+    this.drawCircle(vectorIPoint, 4, true, 1, this.axesColor, this.originColor, this.context);
+    this.drawCircle(vectorJPoint, 4, true, 1, this.axesColor, this.originColor, this.context);
+    this.drawCircle(originPt, originPx.calcDist(vectorIPix), false, 1, this.axesColor, this.originColor, this.context);
+    this.drawCircle(originPt, 8, false, 1, this.axesColor, this.originColor, this.context);
+  }
 
-    this.context.beginPath();
-    this.context.arc(vectorJPix.getI(), vectorJPix.getJToDraw(this.canvasHeight), 4, 0, 2 * Math.PI, true);
-    this.context.fillStyle = this.originColor;
-    this.context.fill();
-    this.context.lineWidth = 1;
-    this.context.strokeStyle = this.axesColor;
-    this.context.stroke();
+  drawLine(startPt: Point, endPt: Point, stokeWeight: number, strokeColor: string, context: CanvasRenderingContext2D): void {
+    const startPix = GraphicLibrary.calcPixelFromPoint(startPt, this.currentScene, this.canvasWidth, this.canvasHeight);
+    const endPix = GraphicLibrary.calcPixelFromPoint(endPt, this.currentScene, this.canvasWidth, this.canvasHeight);
+    context.beginPath();
+    context.moveTo(startPix.getI(), startPix.getJToDraw(this.canvasHeight));
+    context.lineTo(endPix.getI(), endPix.getJToDraw(this.canvasHeight));
+    context.strokeStyle = strokeColor;
+    context.lineWidth = stokeWeight;
+    context.stroke();
+  }
 
-    this.context.beginPath();
-    this.context.moveTo(vectorJOppPix.getI(), vectorJOppPix.getJToDraw(this.canvasHeight));
-    this.context.lineTo(vectorJPix.getI(), vectorJPix.getJToDraw(this.canvasHeight));
-    this.context.strokeStyle = this.axesColor;
-    this.context.lineWidth = 1;
-    this.context.stroke();
-
-    const radius: number = originPx.calcDist(vectorIPix); // TODO a modifier --> calculer plutot la distance // Math.abs(vectorIPix.getI() - originPx.getI());
-    //console.log('radius :', radius);
-    this.context.beginPath();
-    this.context.arc(originPx.getI(), originPx.getJToDraw(this.canvasHeight), radius, 0, 2 * Math.PI, true);
-    this.context.lineWidth = 1;
-    this.context.strokeStyle = this.axesColor;
+  drawCircle(centerPt: Point, radius: number, isFilled: boolean, stokeWeight: number, strokeColor: string, fillColor: string, context: CanvasRenderingContext2D): void {
+    const centerPix = GraphicLibrary.calcPixelFromPoint(centerPt, this.currentScene, this.canvasWidth, this.canvasHeight);
+    context.beginPath();
+    context.arc(centerPix.getI(), centerPix.getJToDraw(this.canvasHeight), radius, 0, 2 * Math.PI, true);
+    if(isFilled) {
+      context.fillStyle = fillColor;
+      context.fill();
+    }
+    context.lineWidth = stokeWeight;
+    context.strokeStyle = strokeColor;
     this.context.stroke();
 
   }

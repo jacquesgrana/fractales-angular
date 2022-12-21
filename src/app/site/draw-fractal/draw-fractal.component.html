@@ -15,10 +15,24 @@
         <button mat-flat-button color="primary" class="button-gen"
           (click)="toggleSettingsDisplay()">{{canvasService.isSettingsDisplayed ? "Masquer les réglages" : "Afficher les réglages"}}&#160;<mat-icon class="text-color-accent">{{canvasService.isSettingsDisplayed ? "visibility_off" :
             "visibility_on"}}</mat-icon></button>
+            <button mat-flat-button color="primary" class="button-gen"
+          (click)="toggleHelpDisplay()">{{canvasService.isHelpDisplayed ? "Masquer l'aide" : "Afficher l'aide"}}&#160;<mat-icon class="text-color-accent">{{canvasService.isHelpDisplayed ? "visibility_off" :
+            "visibility_on"}}</mat-icon></button>
+      </div>
+      <div [hidden]="!canvasService.isHelpDisplayed" class="div-row-settings flex-center">
+        <h3 class="text-color-white div-row-title mt-3 me-1 ms-1 text-center">Aide</h3>
+        <h4 class="text-color-white div-row-title mt-2 me-1 ms-1 text-center">Touches :</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[a]</span> : rotation + / <span class="text-color-accent">[z]</span> : rotation -</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[q]</span> : zoom - / <span class="text-color-accent">[s]</span> : zoom +</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[&rarr; &larr; &uarr; &darr;]</span> : translation &rarr; &larr; &uarr; &darr;</h4>
+        <h4 class="text-color-white div-row-title mt-2 me-1 ms-1 text-center">Réglages :</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[seed]</span> : nombre complexe de 'départ' défini par sa partie réelle et imaginaire</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[limit]</span> : 'seuil' du dessin</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[iter max number]</span> : nombre maximum de pas de la boucle de calcul pour un pixel donné</h4>
       </div>
       <div [hidden]="!canvasService.isSettingsDisplayed" class="div-row-settings flex-center">
-        <h3 class="text-color-white div-row-title">Réglages : Seed : ({{canvasService.real}}) + i x
-          ({{canvasService.imag}})</h3>
+        <h3 class="text-color-white div-row-title mt-3">Réglages : Seed : (<span class="text-color-accent">{{canvasService.real}}</span>) + i x
+          (<span class="text-color-accent">{{canvasService.imag}}</span>)</h3>
         <div class="div-row-2">
           <mat-form-field appearance="outline" color="warn" class="form-field">
             <mat-label>Choisir une fractale</mat-label>

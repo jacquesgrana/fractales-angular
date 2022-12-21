@@ -72,6 +72,10 @@ export class DrawFractalComponent implements OnInit {
     }
   }
 
+  toggleHelpDisplay(): void {
+    this.canvasService.isHelpDisplayed = !this.canvasService.isHelpDisplayed;
+  }
+
   updateGradients(): void {
     this.updateStartGradient();
     this.updateEndGradient();
@@ -79,12 +83,24 @@ export class DrawFractalComponent implements OnInit {
   }
 
   updateResultGradient(): void {
-    let contextCanvasResult = <CanvasRenderingContext2D>this.canvasResult.nativeElement.getContext('2d');
+    this.drawGradientInCanvas(this.canvasResult, this.canvasService.gradientStart, this.canvasService.gradientEnd - this.canvasService.gradientStart);
+  }
+
+  updateStartGradient(): void {
+   this.drawGradientInCanvas(this.canvasStart, 0, this.canvasService.gradientEnd - 1);
+  }
+
+  updateEndGradient(): void {
+    this.drawGradientInCanvas(this.canvasEnd, this.canvasService.gradientStart + 1, 5 - this.canvasService.gradientStart);
+  }
+
+  drawGradientInCanvas(canvas: ElementRef, start: number, range: number): void {
+    let contextCanvasResult = <CanvasRenderingContext2D>canvas.nativeElement.getContext('2d');
     let imageDataResult= contextCanvasResult.createImageData(340, 8);
     for (let i = 0; i < 340; i++) {
       for (let j = 0; j < 8; j++) {
         // TODO factoriser !!!
-        let str = GraphicLibrary.calculateRVB(i, 340, this.canvasService.gradientStart, this.canvasService.gradientEnd - this.canvasService.gradientStart).substring(5);
+        let str = GraphicLibrary.calculateRVB(i, 340, start, range).substring(5);
         str = str.substring(0, str.length - 1);
         let tabVal = str.split(',');
         let red: number = parseInt(tabVal[0]);
@@ -98,65 +114,8 @@ export class DrawFractalComponent implements OnInit {
         imageDataResult.data[indice + 3] = 255;
       }
     }
-    //contextCanvasResult.fillStyle = this.canvasService.backgroundColor;
-    //contextCanvasResult.fillRect(0,0,340,8);
-
     contextCanvasResult.imageSmoothingQuality = "high";
     contextCanvasResult.putImageData(imageDataResult, 0, 0);
-
-  }
-
-  updateStartGradient(): void {
-    let contextCanvasStart = <CanvasRenderingContext2D>this.canvasStart.nativeElement.getContext('2d');
-    let imageDataStart = contextCanvasStart.createImageData(340, 8);
-
-    for (let i = 0; i < 340; i++) {
-      for (let j = 0; j < 8; j++) {
-        // TODO factoriser !!!
-        let str = GraphicLibrary.calculateRVB(i, 340, 0, this.canvasService.gradientEnd - 1).substring(5);
-        str = str.substring(0, str.length - 1);
-        let tabVal = str.split(',');
-        let red: number = parseInt(tabVal[0]);
-        let green: number = parseInt(tabVal[1]);
-        let blue: number = parseInt(tabVal[2]);
-
-        let indice: number = (j * 340 * 4) + (i * 4);
-        imageDataStart.data[indice] = red;
-        imageDataStart.data[indice + 1] = green;
-        imageDataStart.data[indice + 2] = blue;
-        imageDataStart.data[indice + 3] = 255;
-      }
-    }
-    contextCanvasStart.imageSmoothingQuality = "high";
-    contextCanvasStart.putImageData(imageDataStart, 0, 0);
-  }
-
-  updateEndGradient(): void {
-    let contextCanvasEnd = <CanvasRenderingContext2D>this.canvasEnd.nativeElement.getContext('2d');
-    let imageDataEnd = contextCanvasEnd.createImageData(340, 8);
-
-
-    //let start = this.canvasService.gradientStart + 1;
-    //console.log('gradientStart + 1 : start :', start);
-    for (let i = 0; i < 340; i++) {
-      for (let j = 0; j < 8; j++) {
-        // TODO factoriser !!!
-        let str = GraphicLibrary.calculateRVB(i, 340, this.canvasService.gradientStart + 1, this.canvasService.gradientEnd - this.canvasService.gradientStart - 1).substring(5);
-        str = str.substring(0, str.length - 1);
-        let tabVal = str.split(',');
-        let red: number = parseInt(tabVal[0]);
-        let green: number = parseInt(tabVal[1]);
-        let blue: number = parseInt(tabVal[2]);
-
-        let indice: number = (j * 340 * 4) + (i * 4);
-        imageDataEnd.data[indice] = red;
-        imageDataEnd.data[indice + 1] = green;
-        imageDataEnd.data[indice + 2] = blue;
-        imageDataEnd.data[indice + 3] = 255;
-      }
-    }
-    contextCanvasEnd.imageSmoothingQuality = "high";
-    contextCanvasEnd.putImageData(imageDataEnd, 0, 0);
   }
 
   @HostListener('document:keydown', ['$event'])
