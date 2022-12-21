@@ -55,7 +55,7 @@ static calculateRVB(value: number, limit: number, start: number, range: number):
       blue = Math.round(255 - (x - 5)*255);
     }
   }
-  return "rgb(" + red + ", " + green + ", " + blue + ")"
+  return "rgba(" + red + ", " + green + ", " + blue + ", " + 1.0 + ")";
   //return color(red, green, blue);
 }
 

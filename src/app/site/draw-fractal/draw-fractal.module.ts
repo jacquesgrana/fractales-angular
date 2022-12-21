@@ -8,6 +8,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { MatSliderModule } from '@angular/material/slider';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSliderModule
+    MatSliderModule,
+    MatProgressBarModule,
+    BrowserAnimationsModule
   ],
   exports: [
     CanvasComponent

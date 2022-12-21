@@ -1,6 +1,6 @@
 import { newArray } from '@angular/compiler/src/util';
 import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ComplexNb } from '../classes/complex-nb';
 import { JuliaFractal } from '../classes/julia-fractal';
 import { Pixel } from '../classes/pixel';
@@ -48,23 +48,23 @@ export class CanvasService {
   public isAxesDisplayed: boolean = true;
   public isSettingsDisplayed: boolean= false;
 
-  public calcFractalProgressObs$!: BehaviorSubject<number>;
-  public calcFractalProgress!: number;
+  public calcFractalProgressObs$!: Subject<number>;
+  public calcFractalProgress: number = 0;
+
+  public cd!: ChangeDetectorRef
 
   constructor() {
-    //new JuliaFractal(new ComplexNb("Cart", 0.355534, -0.337292), limitModule, 1000);
-    //this.fractal = new JuliaFractal(new ComplexNb(true, -0.4, -0.59), 2, 150);
     this.initFractalList();
     this.fractal = this.fractals[0];
-    //this.fractal = new JuliaFractal("Fractale de base", new ComplexNb(true, 0.355, 0.355), 2, 100);
     this.real = this.fractal.getSeed().getReal();
     this.imag = this.fractal.getSeed().getImag();
     this.limit = this.fractal.getLimit();
     this.iterNb = this.fractal.getMaxIt();
 
-    this.calcFractalProgressObs$ = new BehaviorSubject<number>(0);
+    this.calcFractalProgressObs$ = new Subject<number>();
     this.calcFractalProgressObs$.subscribe(v => {
       this.calcFractalProgress = v;
+      //this.cd.detectChanges();
     });
     this.calcFractalProgressObs$.next(0);
 
@@ -88,27 +88,8 @@ export class CanvasService {
     length = this.fractals.push(new JuliaFractal("Waouw", new ComplexNb(true, 0.0, 0.8), 2, 25));
     length = this.fractals.push(new JuliaFractal("Hé bé", new ComplexNb(true, 0.3, 0.5), 2, 50));
     length = this.fractals.push(new JuliaFractal("Voilà", new ComplexNb(true, -0.8, 0.0), 2, 200));
-    console.log('nombre de fractales dans la liste :', length);
-
+    //console.log('nombre de fractales dans la liste :', length);
   }
-  /**
-   * let tabFractal = new Array(fractalNb);
-    tabFractal[0] = new JuliaFractal(new ComplexNb("Cart", -0.4, -0.59), limitModule, 150);
-    tabFractal[1] = new JuliaFractal(new ComplexNb("Cart", 0.355534, -0.337292), limitModule, 1000);
-    tabFractal[2] = new JuliaFractal(new ComplexNb("Cart", -0.4, -0.59), limitModule, 100);
-    tabFractal[3] = new JuliaFractal(new ComplexNb("Cart", -0.54, 0.54), limitModule, 100);
-    tabFractal[4] = new JuliaFractal(new ComplexNb("Cart", 0.355, 0.355), limitModule, 100);
-    tabFractal[5] = new JuliaFractal(new ComplexNb("Cart", -0.7, 0.27015), limitModule, 200);
-    tabFractal[6] = new JuliaFractal(new ComplexNb("Cart", 0.285, 0.01), limitModule, 75);
-    tabFractal[7] = new JuliaFractal(new ComplexNb("Cart", -1.417022285618, 0.0099534), limitModule, 20);
-    tabFractal[8] = new JuliaFractal(new ComplexNb("Cart", -0.038088, 0.9754633), limitModule, 20);
-    tabFractal[9] = new JuliaFractal(new ComplexNb("Cart", 0.285, 0.013 ), limitModule, 200);
-    tabFractal[10] = new JuliaFractal(new ComplexNb("Cart", -0.4, 0.6 ), limitModule, 100);
-    tabFractal[11] = new JuliaFractal(new ComplexNb("Cart", -0.8, 0.156 ), limitModule, 150);
-    tabFractal[12] = new JuliaFractal(new ComplexNb("Cart", 0.0, 0.8), limitModule, 25);
-    tabFractal[13] = new JuliaFractal(new ComplexNb("Cart", 0.3, 0.5), limitModule, 50);
-    tabFractal[14] = new JuliaFractal(new ComplexNb("Cart", -0.8, 0.0), limitModule, 200);
-   */
 
   public initService(): void {
     this.initTabToDraw();
@@ -142,14 +123,20 @@ export class CanvasService {
 
 
   // TODO rendre asynchrone
-  public updateTabToDraw(): void {
-    const promise = new Promise<void>((resolve, reject) => {
+  public async updateTabToDraw(): Promise<string[][]> {
       const max = (this.canvasWidth * this.canvasHeight) - 1;
       //this.setCalcFractalProgress(0);
-      this.calcFractalProgressObs$.next(0);
+      //this.calcFractalProgressObs$.next(0);
+
+      //this.cd.markForCheck();
+      //this.cd.detectChanges();
+
+
       let cpt = 0;
       let pix = new Pixel(0, 0);
+      let tabToDraw: string[][] = new Array(this.canvasWidth);
       for (let i = 0; i < this.canvasWidth; i++) {
+        tabToDraw[i] = new Array(this.canvasHeight);
         for (let j = 0; j < this.canvasHeight; j++) {
 
           pix.setI(i);
@@ -157,35 +144,33 @@ export class CanvasService {
           let pointM = GraphicLibrary.calcPointFromPix(pix, this.currentScene, this.canvasWidth, this.canvasHeight);
           let z = new ComplexNb(true, pointM.getX(), pointM.getY());
           let colorPt = this.fractal.calcColorFromJuliaFractal(z, this.gradientStart, this.gradientEnd - this.gradientStart, this.backgroundColor);
-          //let colorPt = this.fractal.calcColorFromJuliaFractal(z, 3, 2, this.backgroundColor);
-          this.tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
-          //console.log('color : i :', i, ':', j, ':', colorPt);
-          //console.log('jobPercent :', jobPercent);
+          tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
 
-          //this.calcFractalProgress = jobPercent;
-          let jobPercent = 100 * cpt / max;
-          //jobPercent = jobPercent == 100 ? 0 : jobPercent;
-          //this.setCalcFractalProgress(jobPercent);
-          this.calcFractalProgressObs$.next(jobPercent);
-          //this.cd.detectChanges();
+          let jobPercent = Math.round(100 * cpt / max);
+
+          if(jobPercent%10 === 0) {
+            //console.log('% : ', jobPercent);
+            this.calcFractalProgressObs$.next(jobPercent);
+            //this.cd.detectChanges();
+            this.cd.markForCheck();
+          }
+
           cpt++;
         }
       }
-      resolve();
-    }).then(() =>
-      {
-        console.log('calcul fini');
-        //this.calcFractalProgressObs$.next(0);
-      }
-    )
+      //this.calcFractalProgressObs$.next(100);
+      setTimeout( () => {
+        this.calcFractalProgressObs$.next(0);
+       }, 400 );
 
+      return tabToDraw;
 
   }
 
   public loadImageFromTab(): void {
     for (let i = 0; i < this.canvasWidth; i++) {
       for (let j = 0; j < this.canvasHeight; j++) {
-        let str = this.tabToDraw[i][j].substring(4);
+        let str = this.tabToDraw[i][j].substring(5);
         str = str.substring(0, str.length - 1);
         let tabVal = str.split(',');
         let red: number = parseInt(tabVal[0]);
@@ -203,18 +188,16 @@ export class CanvasService {
   }
 
   public updateDisplay(): void {
-    //this.setCalcFractalProgress(0);
-    //setTimeout(() => {}, 100);
-    /*
-    this.calcFractalProgressObs$.unsubscribe();
-    this.calcFractalProgressObs$ = new BehaviorSubject<number>(0);
-    this.calcFractalProgressObs$.subscribe(v => {
-      this.calcFractalProgress = v;
-    });*/
-    this.calcFractalProgressObs$.next(0);
+    //this.calcFractalProgressObs$.next(0);
     this.currentScene.updateMatrix();
-    this.isFractalDisplayed ? this.drawFractal() : this.drawBlank();
-    if (this.isAxesDisplayed) this.drawAxes();
+    if(this.isFractalDisplayed) {
+      this.drawFractal();
+    }
+    else {
+      this.drawBlank();
+    }
+    //this.isFractalDisplayed ? await this.drawFractal() : this.drawBlank();
+
 
     }
 
@@ -225,6 +208,45 @@ export class CanvasService {
     this.loadImageFromTab();
     this.context.imageSmoothingQuality = "high";
     this.context.putImageData(this.imageData, 0, 0);
+  }
+
+
+
+  drawFractal(): void {
+    this.initImageData();
+    this.updateTabToDraw().then(
+      data => {
+        //console.log('travail fini : tabToDraw', this.tabToDraw);
+        this.tabToDraw = data;
+        this.loadImageFromTab();
+        this.context.imageSmoothingQuality = "high";
+        this.context.putImageData(this.imageData, 0, 0);
+        if (this.isAxesDisplayed) this.drawAxes();
+      }
+    );
+
+  }
+
+  setCalcFractalProgress(value: number): void {
+    this.calcFractalProgress = value;
+  }
+
+  uptadeFractal(): void {
+    //console.log("update fractale");
+
+    this.fractal.getSeed().setReal(this.real);
+    this.fractal.getSeed().setImag(this.imag);
+    this.fractal.setLimit(this.limit);
+    this.fractal.setMaxIt(this.iterNb);
+    this.updateDisplay();
+  }
+
+  changeFractal(): void {
+    this.real = this.fractal.getSeed().getReal();
+    this.imag = this.fractal.getSeed().getImag();
+    this.limit = this.fractal.getLimit();
+    this.iterNb = this.fractal.getMaxIt();
+    this.updateDisplay();
   }
 
   drawAxes() {
@@ -295,35 +317,5 @@ export class CanvasService {
     this.context.strokeStyle = this.axesColor;
     this.context.stroke();
 
-  }
-
-  drawFractal(): void {
-    this.updateTabToDraw();
-    this.initImageData();
-    this.loadImageFromTab();
-    this.context.imageSmoothingQuality = "high";
-    this.context.putImageData(this.imageData, 0, 0);
-  }
-
-  setCalcFractalProgress(value: number): void {
-    this.calcFractalProgress = value;
-  }
-
-  uptadeFractal(): void {
-    console.log("update fractale");
-
-    this.fractal.getSeed().setReal(this.real);
-    this.fractal.getSeed().setImag(this.imag);
-    this.fractal.setLimit(this.limit);
-    this.fractal.setMaxIt(this.iterNb);
-    this.updateDisplay();
-  }
-
-  changeFractal(): void {
-    this.real = this.fractal.getSeed().getReal();
-    this.imag = this.fractal.getSeed().getImag();
-    this.limit = this.fractal.getLimit();
-    this.iterNb = this.fractal.getMaxIt();
-    this.updateDisplay();
   }
 }

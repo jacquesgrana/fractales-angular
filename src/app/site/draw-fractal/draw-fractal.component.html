@@ -1,9 +1,9 @@
 <div class="body-container">
   <section class="block-container" id="block-container">
     <app-canvas></app-canvas>
-    <mat-progress-bar mode="determinate" [value]="(canvasService.calcFractalProgressObs$ | async) || 0"
+    <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async"
       class=""></mat-progress-bar>
-    <!-- (canvasService.calcFractalProgressObs$ | async) || 0 canvasService.calcFractalProgress -->
+    <!-- (canvasService.calcFractalProgressObs$ | async) || 0 / canvasService.calcFractalProgress -->
     <section class="block">
       <div class="div-row">
         <button mat-flat-button color="primary" class="button-gen"

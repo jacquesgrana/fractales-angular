@@ -6,7 +6,6 @@ import { CanvasService } from 'src/app/services/canvas.service';
   selector: 'app-draw-fractal',
   templateUrl: './draw-fractal.component.html',
   styleUrls: ['./draw-fractal.component.scss'],
-  preserveWhitespaces: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DrawFractalComponent implements OnInit {
@@ -19,13 +18,15 @@ export class DrawFractalComponent implements OnInit {
   @ViewChild('canvasResult', {static: false}) public canvasResult!: ElementRef;
 
 
-  constructor(public canvasService: CanvasService,
-    private cd: ChangeDetectorRef) {
-      //this.canvasService.cd = cd;
+  constructor(public canvasService: CanvasService, private cd: ChangeDetectorRef
+    ) { //private cd: ChangeDetectorRef
+
   }
 
   ngOnInit(): void {
     //this.updateCanvasDimensions();
+    this.canvasService.cd = this.cd;
+
   }
 
   updateCanvasDimensions() {
@@ -83,7 +84,7 @@ export class DrawFractalComponent implements OnInit {
     for (let i = 0; i < 340; i++) {
       for (let j = 0; j < 8; j++) {
         // TODO factoriser !!!
-        let str = GraphicLibrary.calculateRVB(i, 340, this.canvasService.gradientStart, this.canvasService.gradientEnd - this.canvasService.gradientStart).substring(4);
+        let str = GraphicLibrary.calculateRVB(i, 340, this.canvasService.gradientStart, this.canvasService.gradientEnd - this.canvasService.gradientStart).substring(5);
         str = str.substring(0, str.length - 1);
         let tabVal = str.split(',');
         let red: number = parseInt(tabVal[0]);
@@ -112,7 +113,7 @@ export class DrawFractalComponent implements OnInit {
     for (let i = 0; i < 340; i++) {
       for (let j = 0; j < 8; j++) {
         // TODO factoriser !!!
-        let str = GraphicLibrary.calculateRVB(i, 340, 0, this.canvasService.gradientEnd - 1).substring(4);
+        let str = GraphicLibrary.calculateRVB(i, 340, 0, this.canvasService.gradientEnd - 1).substring(5);
         str = str.substring(0, str.length - 1);
         let tabVal = str.split(',');
         let red: number = parseInt(tabVal[0]);
@@ -135,12 +136,12 @@ export class DrawFractalComponent implements OnInit {
     let imageDataEnd = contextCanvasEnd.createImageData(340, 8);
 
 
-    let start = this.canvasService.gradientStart + 1;
-    console.log('gradientStart + 1 : start :', start);
+    //let start = this.canvasService.gradientStart + 1;
+    //console.log('gradientStart + 1 : start :', start);
     for (let i = 0; i < 340; i++) {
       for (let j = 0; j < 8; j++) {
         // TODO factoriser !!!
-        let str = GraphicLibrary.calculateRVB(i, 340, this.canvasService.gradientStart + 1, this.canvasService.gradientEnd - this.canvasService.gradientStart - 1).substring(4);
+        let str = GraphicLibrary.calculateRVB(i, 340, this.canvasService.gradientStart + 1, this.canvasService.gradientEnd - this.canvasService.gradientStart - 1).substring(5);
         str = str.substring(0, str.length - 1);
         let tabVal = str.split(',');
         let red: number = parseInt(tabVal[0]);
@@ -196,7 +197,7 @@ export class DrawFractalComponent implements OnInit {
         //console.log('touche a');
         this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() - 5.0);
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
       case 'z':
         //console.log('touche z');
