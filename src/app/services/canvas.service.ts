@@ -25,6 +25,8 @@ export class CanvasService {
   public canvasHeight!: number;
 
   public canvas!: ElementRef;
+  //public canvasHtml = this.canvas.nativeElement as HTMLCanvasElement;
+
   public context!: CanvasRenderingContext2D;
 
   public backgroundColor: string = 'rgba(20,20,20,1.0)';
@@ -51,6 +53,11 @@ export class CanvasService {
   public isAxesDisplayed: boolean = true;
   public isSettingsDisplayed: boolean = false;
   public isHelpDisplayed: boolean = false;
+  public isSelectionDraw: boolean = false;
+  //public isMouseIn: boolean = false; // TODO passer en Subject<boolean> ?
+
+  public mouseDownPix: Pixel | null = null;
+  public mouseUpPix: Pixel | null = null;
 
   public calcFractalProgressObs$!: Subject<number>;
   public calcFractalProgress: number = 0;
@@ -140,52 +147,45 @@ export class CanvasService {
 
   /**
    * Méthode qui calcule et renvoie le tableau des couleurs calculées selon la fractale
-   * @returns string[][] tableau contenant les couleurs calculées des pixels du canvas
+   * @returns promise tableau contenant les couleurs calculées des pixels du canvas
    */
   public async updateTabToDraw(): Promise<Color[][]> {
-      const max = (this.canvasWidth * this.canvasHeight) - 1;
-      //this.setCalcFractalProgress(0);
-      //this.calcFractalProgressObs$.next(0);
+    const max = (this.canvasWidth * this.canvasHeight) - 1;
+    let cpt = 0;
+    let pix = new Pixel(0, 0);
+    let tabToDraw: Color[][] = new Array(this.canvasWidth);
+    for (let i = 0; i < this.canvasWidth; i++) {
+      tabToDraw[i] = new Array(this.canvasHeight);
+      for (let j = 0; j < this.canvasHeight; j++) {
 
-      //this.cd.markForCheck();
-      //this.cd.detectChanges();
+        pix.setI(i);
+        pix.setJ(j);
+        let pointM = GraphicLibrary.calcPointFromPix(pix, this.currentScene, this.canvasWidth, this.canvasHeight);
+        let z = new ComplexNb(true, pointM.getX(), pointM.getY());
+        let colorPt = this.fractal.calcColorFromJuliaFractal(z, this.gradientStart, this.gradientEnd - this.gradientStart, this.backgroundColor);
+        tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
 
-
-      let cpt = 0;
-      let pix = new Pixel(0, 0);
-      let tabToDraw: Color[][] = new Array(this.canvasWidth);
-      for (let i = 0; i < this.canvasWidth; i++) {
-        tabToDraw[i] = new Array(this.canvasHeight);
-        for (let j = 0; j < this.canvasHeight; j++) {
-
-          pix.setI(i);
-          pix.setJ(j);
-          let pointM = GraphicLibrary.calcPointFromPix(pix, this.currentScene, this.canvasWidth, this.canvasHeight);
-          let z = new ComplexNb(true, pointM.getX(), pointM.getY());
-          let colorPt = this.fractal.calcColorFromJuliaFractal(z, this.gradientStart, this.gradientEnd - this.gradientStart, this.backgroundColor);
-          tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
-
-          let jobPercent = Math.round(100 * cpt / max);
-/*
-          if(jobPercent%20 === 0) {
-            //console.log('% : ', jobPercent);
-            //this.calcFractalProgressObs$.next(jobPercent);
-            setTimeout( () => {
-              this.calcFractalProgressObs$.next(jobPercent);
-             }, 0 );
-            //this.cd.detectChanges();
-            //this.cd.markForCheck();
-          }
-*/
-          cpt++;
-        }
+        let jobPercent = Math.round(100 * cpt / max);
+        /*
+                  if(jobPercent%20 === 0) {
+                    //console.log('% : ', jobPercent);
+                    //this.calcFractalProgressObs$.next(jobPercent);
+                    setTimeout( () => {
+                      this.calcFractalProgressObs$.next(jobPercent);
+                     }, 0 );
+                    //this.cd.detectChanges();
+                    //this.cd.markForCheck();
+                  }
+        */
+        cpt++;
       }
-      this.calcFractalProgressObs$.next(100);
-      setTimeout( () => {
-        this.calcFractalProgressObs$.next(0);
-       }, 500 );
+    }
+    this.calcFractalProgressObs$.next(100);
+    setTimeout(() => {
+      this.calcFractalProgressObs$.next(0);
+    }, 500);
 
-      return tabToDraw;
+    return tabToDraw;
 
   }
 
@@ -203,20 +203,79 @@ export class CanvasService {
         let green: number = parseInt(tabVal[1]);
         let blue: number = parseInt(tabVal[2]);
         let alpha: number = parseFloat(tabVal[3]);
-*/
-        let red: number = this.tabToDraw[i][j].getRed();
-        let green: number = this.tabToDraw[i][j].getGreen();
-        let blue: number = this.tabToDraw[i][j].getBlue();
-        let alpha: number = this.tabToDraw[i][j].getAlpha();
-
+        */
         let indice: number = (j * this.canvasWidth * 4) + (i * 4);
-        this.imageData.data[indice] = red;
-        this.imageData.data[indice + 1] = green;
-        this.imageData.data[indice + 2] = blue;
-        this.imageData.data[indice + 3] = alpha;
+        this.imageData.data[indice] = this.tabToDraw[i][j].getRed();
+        this.imageData.data[indice + 1] = this.tabToDraw[i][j].getGreen();
+        this.imageData.data[indice + 2] = this.tabToDraw[i][j].getBlue();
+        this.imageData.data[indice + 3] = this.tabToDraw[i][j].getAlpha();
       }
     }
     //this.imageData.data = this.data;
+  }
+
+  public centerOnPixel(center: Pixel): void {
+    console.log('appel centerOnPixel : center :', center.toString());
+
+    let centerPt: Point = GraphicLibrary.calcPointFromPix(center, this.currentScene, this.canvasWidth, this.canvasHeight);
+    let originPt: Point = GraphicLibrary.transfInv(centerPt, this.currentScene);
+    //console.log('center pt : x :', centerPt.getX(), ' y :', centerPt.getY());
+    this.currentScene.setMinX(originPt.getX() - (this.currentScene.getRangeX() / 2));
+    this.currentScene.setMinY(originPt.getY() - (this.currentScene.getRangeY() / 2));
+    //console.log('min x :', this.currentScene.getMinX(), 'min y :', this.currentScene.getMinY());
+    //this.currentScene.updateMatrix();
+    this.updateDisplay();
+
+
+  }
+
+  public zoomIn(start: Pixel, end: Pixel): void {
+
+
+
+    console.log('appel zoom in : start : ', start.toString(), ' : end :', end.toString());
+    let startPt: Point = GraphicLibrary.calcPointFromPix(start, this.currentScene, this.canvasWidth, this.canvasHeight);
+    startPt = GraphicLibrary.transfInv(startPt, this.currentScene);
+
+    let endPt: Point = GraphicLibrary.calcPointFromPix(end, this.currentScene, this.canvasWidth, this.canvasHeight);
+    endPt = GraphicLibrary.transfInv(endPt, this.currentScene);
+
+    let deltaX: number = Math.abs(endPt.getX() - startPt.getX());
+    let deltaY: number = Math.abs(endPt.getY() - startPt.getY());
+    let max: number = Math.max(deltaX, deltaY);
+    //console.log('deltas : deltaX :', deltaX, ' : deltaY :', deltaY);
+    //console.log('max :', max);
+    if (this.canvasWidth > this.canvasHeight) {
+      this.currentScene.setRangeY(max);
+      this.currentScene.setRangeX(max * this.canvasWidth / this.canvasHeight)
+    }
+    else if (this.canvasWidth < this.canvasHeight) {
+      this.currentScene.setRangeX(max);
+      this.currentScene.setRangeY(max * this.canvasHeight / this.canvasWidth);
+    }
+    else if (this.canvasWidth === this.canvasHeight) {
+      this.currentScene.setRangeX(max);
+      this.currentScene.setRangeY(max);
+    }
+
+    this.currentScene.setMinX(Math.min(startPt.getX(), endPt.getX()));
+    this.currentScene.setMinY(Math.min(startPt.getY(), endPt.getY()));
+
+
+    //this.currentScene.updateMatrix();
+    //let centerPix = new Pixel(Math.round((start.getI() + end.getI()) / 2), Math.round((start.getJ() + end.getJ()) / 2));
+
+    //console.log('centerPix :', centerPix.toString());
+    //this.centerOnPixel(centerPix);
+    /*
+    let centerPt: Point = GraphicLibrary.calcPointFromPix(centerPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+    centerPt = GraphicLibrary.transfInv(centerPt, this.currentScene);
+    //let originPt: Point = GraphicLibrary.transfInv(centerPt, this.currentScene);
+    //console.log('center pt : x :', centerPt.getX(), ' y :', centerPt.getY());
+    this.currentScene.setMinX(centerPt.getX() - (this.currentScene.getRangeX() / 2));
+    this.currentScene.setMinY(centerPt.getY() - (this.currentScene.getRangeY() / 2));
+    */
+    this.updateDisplay();
   }
 
   /**
@@ -225,7 +284,7 @@ export class CanvasService {
   public updateDisplay(): void {
     //this.calcFractalProgressObs$.next(0);
     this.currentScene.updateMatrix();
-    if(this.isFractalDisplayed) {
+    if (this.isFractalDisplayed) {
       this.drawFractal();
     }
     else {
@@ -234,11 +293,11 @@ export class CanvasService {
     //this.isFractalDisplayed ? await this.drawFractal() : this.drawBlank();
 
 
-    }
+  }
 
-    /**
-     * Méthode qui affiche le canvas sans la fractale (canvas rempli par la couleur du background)
-     */
+  /**
+   * Méthode qui affiche le canvas sans la fractale (canvas rempli par la couleur du background)
+   */
   drawBlank(): void {
     //this.canvasService.updateTabToDraw();
     this.initImageData();
@@ -269,9 +328,9 @@ export class CanvasService {
 
   }
 
-/**
- * Méthode qui met à jour la fractale selon les valeurs choisies dans les réglages
- */
+  /**
+   * Méthode qui met à jour la fractale selon les valeurs choisies dans les réglages
+   */
   uptadeFractal(): void {
     //console.log("update fractale");
 
@@ -343,17 +402,28 @@ export class CanvasService {
    * @param fillColor
    * @param context
    */
-  drawCircle(centerPt: Point, radius: number, isFilled: boolean, stokeWeight: number, strokeColor: string, fillColor: string, context: CanvasRenderingContext2D): void {
+  drawCircle(centerPt: Point, radius: number, isFilled: boolean, strokeWeight: number, strokeColor: string, fillColor: string, context: CanvasRenderingContext2D): void {
     const centerPix = GraphicLibrary.calcPixelFromPoint(centerPt, this.currentScene, this.canvasWidth, this.canvasHeight);
     context.beginPath();
     context.arc(centerPix.getI(), centerPix.getJToDraw(this.canvasHeight), radius, 0, 2 * Math.PI, true);
-    if(isFilled) {
+    if (isFilled) {
       context.fillStyle = fillColor;
       context.fill();
     }
-    context.lineWidth = stokeWeight;
+    context.lineWidth = strokeWeight;
     context.strokeStyle = strokeColor;
     this.context.stroke();
+  }
 
+  drawRect(startPt: Point, endPt: Point, isFilled: boolean, strokeWeight: number, strokeColor: string, fillColor: string, context: CanvasRenderingContext2D): void {
+    const startPix = GraphicLibrary.calcPixelFromPoint(startPt, this.currentScene, this.canvasWidth, this.canvasHeight);
+    const endPix = GraphicLibrary.calcPixelFromPoint(endPt, this.currentScene, this.canvasWidth, this.canvasHeight);
+    if(isFilled) {
+      context.fillStyle = fillColor;
+      context.fillRect(startPix.getI(), startPix.getJ(), endPix.getI() - startPix.getI(), endPix.getJ() - startPix.getJ());
+    }
+    context.lineWidth = strokeWeight;
+    context.strokeStyle = strokeColor;
+    context.strokeRect(startPix.getI(), startPix.getJ(), endPix.getI() - startPix.getI(), endPix.getJ() - startPix.getJ());
   }
 }

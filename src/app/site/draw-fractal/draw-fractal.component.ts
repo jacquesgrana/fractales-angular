@@ -100,23 +100,11 @@ export class DrawFractalComponent implements OnInit {
     for (let i = 0; i < 340; i++) {
       for (let j = 0; j < 8; j++) {
         let color = GraphicLibrary.calculateRVB(i, 340, start, range);
-        /*
-        str = str.substring(0, str.length - 1);
-        let tabVal = str.split(',');
-        let red: number = parseInt(tabVal[0]);
-        let green: number = parseInt(tabVal[1]);
-        let blue: number = parseInt(tabVal[2]);
-        */
-
-        let red: number = color.getRed();
-        let green: number = color.getGreen();
-        let blue: number = color.getBlue();
-        let alpha: number = color.getAlpha();
         let indice: number = (j * 340 * 4) + (i * 4);
-        imageDataResult.data[indice] = red;
-        imageDataResult.data[indice + 1] = green;
-        imageDataResult.data[indice + 2] = blue;
-        imageDataResult.data[indice + 3] = 255;
+        imageDataResult.data[indice] = color.getRed();
+        imageDataResult.data[indice + 1] = color.getGreen();
+        imageDataResult.data[indice + 2] = color.getBlue();
+        imageDataResult.data[indice + 3] = color.getAlpha();
       }
     }
     contextCanvasResult.imageSmoothingQuality = "high";
@@ -134,28 +122,28 @@ export class DrawFractalComponent implements OnInit {
         Tx = this.canvasService.currentScene.getTrans().getX() + 0.05 * this.canvasService.currentScene.getRangeX();
         this.canvasService.currentScene.getTrans().setX(Tx);
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
       case 'ArrowRight':
         //console.log('touche droit');
         Tx = this.canvasService.currentScene.getTrans().getX() - 0.05 * this.canvasService.currentScene.getRangeX();
         this.canvasService.currentScene.getTrans().setX(Tx);
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
       case 'ArrowUp':
         //console.log('touche haut');
         Ty = this.canvasService.currentScene.getTrans().getY() - 0.05 * this.canvasService.currentScene.getRangeY();
         this.canvasService.currentScene.getTrans().setY(Ty);
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
       case 'ArrowDown':
         //console.log('touche bas');
         Ty = this.canvasService.currentScene.getTrans().getY() + 0.05 * this.canvasService.currentScene.getRangeY();
         this.canvasService.currentScene.getTrans().setY(Ty);
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
       case 'a':
         //console.log('touche a');
@@ -167,29 +155,29 @@ export class DrawFractalComponent implements OnInit {
         //console.log('touche z');
         this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() + 5.0);
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
       case 'q':
         //console.log('touche q');
         this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 1.05);
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
       case 's':
         //console.log('touche s');
         this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 0.95);
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
       case 'f':
         this.canvasService.isFractalDisplayed = !this.canvasService.isFractalDisplayed;
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
       case 'd':
         this.canvasService.isAxesDisplayed = !this.canvasService.isAxesDisplayed;
         this.canvasService.updateDisplay();
-        this.cd.detectChanges();
+        //this.cd.detectChanges();
         break;
     }
   }

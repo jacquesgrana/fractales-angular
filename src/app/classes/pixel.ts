@@ -40,4 +40,8 @@ export class Pixel {
   calcDist(endPixel: Pixel): number {
     return Math.sqrt((endPixel.getI() - this.getI())*(endPixel.getI() - this.getI()) + (endPixel.getJ() - this.getJ())*(endPixel.getJ() - this.getJ()));
   }
+
+  equals(toCompare: Pixel): boolean {
+    return this.getI() === toCompare.getI() && this.getJ() === toCompare.getJ();
+  }
  }
