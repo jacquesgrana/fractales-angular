@@ -105,7 +105,7 @@
 
 .label {
   font-size: 1.4rem;
-  margin-top: 0.5rem;
+
 }
 
 .input {
@@ -130,12 +130,12 @@
 #canvasStart,
 #canvasEnd,
 #canvasResult {
-  border: 1px solid black;
+  border: ($components-border-thickness / 2) solid black;
 }
 
 .mat-divider {
   border-top-color: $components-background-color;
-  border: ($components-border-thickness / 2) solid black;
+  border: ($components-border-thickness / 2) solid $components-background-color;
   margin-left: 1rem;
   margin-right: 1rem;
   margin-top: 2rem;
@@ -147,6 +147,9 @@
   border: ($components-border-thickness / 2) solid black;
 }
 
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
+  top: 0.25rem;
+}
 
 ::ng-deep .mat-form-field {
   //background-color:$components-background-color-bis !important;

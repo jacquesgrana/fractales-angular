@@ -95,7 +95,8 @@
           </mat-form-field>
 
         </div>
-        <h4 class="text-center">Réglage des couleurs</h4>
+        <mat-divider></mat-divider>
+        <h4 class="text-center mt-4">Réglage des couleurs</h4>
         <div class="div-row-2">
           <div class="column">
             <h5 class="text-center">Couleur de début</h5>
@@ -116,6 +117,7 @@
             <canvas #canvasResult id="canvasResult" width="340px" height="8px"></canvas>
           </div>
         </div>
+        <mat-divider class="mb-3"></mat-divider>
         <button mat-flat-button color="primary" class="button-gen mb-3"
           (click)="canvasService.uptadeFractal()">Appliquer les modifications&#160;<mat-icon class="text-color-accent">done</mat-icon></button>
       </div>

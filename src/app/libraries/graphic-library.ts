@@ -61,15 +61,14 @@ static calculateRVB(value: number, limit: number, start: number, range: number):
   //return color(red, green, blue);
 }
 
-/*
-   * Fonction qui renvoie le point(x,y) correspondant au pixel(i,j) de la fenêtre
+/**
+   * Fonction qui renvoie le point(x,y) correspondant au pixel(i,j) de la fenêtre (ou canvas)
    *
-   * @param Pixel pixel : pixel a convertir en coordonnées x,y
-   * @param Point trans : "vecteur" de la tranlation
-   * @param Double age : taux d'agrandissement/réduction
-   * @param Double angle : angle en degré de la rotation
-   * @param Scene currenScene : objet scene contenant les paramétres de la scène
-   * @return Point
+   * @param pixel : pixel a convertir en coordonnées x,y
+   * @param currenScene : objet scene contenant les paramétres de la scène
+   * @param sizeI : largeur en pixel de la fenêtre
+   * @param sizeJ : hauteur en pixel de la fenêtre
+   * @return point obtenu
    */
 public static calcPointFromPix(pixel: Pixel, currentScene: Scene, sizeI: number, sizeJ: number) {
   let x = currentScene.getMinX() + currentScene.calcStepX(sizeI)*pixel.getI();
@@ -78,24 +77,19 @@ public static calcPointFromPix(pixel: Pixel, currentScene: Scene, sizeI: number,
   return GraphicLibrary.transfDir(new Point(x, y), currentScene);
 }
 
-/*
-* Fonction qui renvoie le pixel(i,j)  de la fenêtre correspondant au point(x,y)
+/**
+* Fonction qui renvoie le pixel(i,j)  de la fenêtre (ou canvas) correspondant au point(x,y)
  *
- * @param Point start : point à convertir en pixel
- * @param Point trans : "vecteur" de la tranlation
- * @param Double age : taux d'agrandissement/réduction
- * @param Double angle : angle en degré de la rotation
- * @param Scene currenScene : objet scene contenant les paramétres de la scène
- à @return Pixel
+ * @param start : point à convertir en pixel
+ * @param currenScene : objet scene contenant les paramétres de la scène
+ * @param sizeI : largeur en pixel de la fenêtre
+ * @param sizeJ : hauteur en pixel de la fenêtre
+ * @return pixel obtenu
  */
  public static calcPixelFromPoint(start: Point, currentScene: Scene, sizeI: number, sizeJ: number) {
-  //let end = this.calcInv(start, currentScene);
   let end = GraphicLibrary.transfInv(start, currentScene);
   let x = end.getX();
   let y = end.getY();
-  //console.log("x :", x);
-  //console.log("y :", y);
-
   let i = Math.round((x - currentScene.getMinX())*sizeI/currentScene.getRangeX());
   let j = Math.round((y - currentScene.getMinY())*sizeJ/currentScene.getRangeY());
   return new Pixel(i, j);
@@ -103,15 +97,10 @@ public static calcPointFromPix(pixel: Pixel, currentScene: Scene, sizeI: number,
 
 static transfDir(point: Point, currentScene: Scene) {
   let start = new Matrix(3, 1);
-  //print("start : 0,0 : " + start.getValueAt(0,0));
   start.setValueAt(0, 0, point.getX());
   start.setValueAt(1, 0, point.getY());
   start.setValueAt(2, 0, 1);
-  //console.log("mat point start transf dir :\n" + start.toString());
-
-  //print("mat point start transf dir :\n" + start.toString());
   let end = MatrixLibrary.multiply(currentScene.getMatrixDir(), start);
-  //print("mat point end transf dir :\n" + start.toString());
   return new Point(end.getValueAt(0, 0), end.getValueAt(1, 0));
 }
 
@@ -120,15 +109,7 @@ static transfInv(point: Point, currentScene: Scene) {
   start.setValueAt(0, 0, point.getX());
   start.setValueAt(1, 0, point.getY());
   start.setValueAt(2, 0, 1);
-  //console.log("mat point start transf inv :\n" + start.toString());
-
-  //print("mat point start transf inv :\n" + start.toString());
   let end = MatrixLibrary.multiply(currentScene.getMatrixInv(), start);
-  //console.log("matrice inverse : " + currentScene.getMatrixInv().toString());
-
-  //print("matrice inverse : " + this.matrixInv.toString());
-  //let end = multiply(this.matrixInv, start);
-  //print("point end transf inv :\n" + end.toString());
   return new Point(end.getValueAt(0, 0), end.getValueAt(1, 0));
 }
 }
