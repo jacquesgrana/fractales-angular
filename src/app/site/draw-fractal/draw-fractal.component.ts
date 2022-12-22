@@ -99,14 +99,19 @@ export class DrawFractalComponent implements OnInit {
     let imageDataResult= contextCanvasResult.createImageData(340, 8);
     for (let i = 0; i < 340; i++) {
       for (let j = 0; j < 8; j++) {
-        // TODO factoriser !!!
-        let str = GraphicLibrary.calculateRVB(i, 340, start, range).substring(5);
+        let color = GraphicLibrary.calculateRVB(i, 340, start, range);
+        /*
         str = str.substring(0, str.length - 1);
         let tabVal = str.split(',');
         let red: number = parseInt(tabVal[0]);
         let green: number = parseInt(tabVal[1]);
         let blue: number = parseInt(tabVal[2]);
+        */
 
+        let red: number = color.getRed();
+        let green: number = color.getGreen();
+        let blue: number = color.getBlue();
+        let alpha: number = color.getAlpha();
         let indice: number = (j * 340 * 4) + (i * 4);
         imageDataResult.data[indice] = red;
         imageDataResult.data[indice + 1] = green;

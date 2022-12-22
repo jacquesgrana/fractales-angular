@@ -16,7 +16,7 @@ export class GraphicLibrary {
  * @param Integer range : détermine la partie de l'arc en ciel utilisée par le dégradé (start + range <= 6)
  * @return color : couleur déterminée par la comparaison sur une partie ou tout "l'arc en ciel"
  */
-static calculateRVB(value: number, limit: number, start: number, range: number): string {
+static calculateRVB(value: number, limit: number, start: number, range: number): Color {
   let red = 0;
   let green = 0;
   let blue = 0;
@@ -56,8 +56,8 @@ static calculateRVB(value: number, limit: number, start: number, range: number):
       blue = Math.round(255 - (x - 5)*255);
     }
   }
-  let colorToReturn = new Color(red, green, blue, 255);
-  return "rgba(" + red + ", " + green + ", " + blue + ", " + 1.0 + ")";
+  return new Color(red, green, blue, 255);
+  //return "rgba(" + red + ", " + green + ", " + blue + ", " + 1.0 + ")";
   //return color(red, green, blue);
 }
 

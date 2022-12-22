@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { Color } from '../classes/color';
 import { ComplexNb } from '../classes/complex-nb';
 import { JuliaFractal } from '../classes/julia-fractal';
 import { Pixel } from '../classes/pixel';
@@ -18,7 +19,7 @@ export class CanvasService {
 
   public imageData!: ImageData;
   //public data!: Uint8ClampedArray;
-  public tabToDraw!: string[][];
+  public tabToDraw!: Color[][];
 
   public canvasWidth!: number;
   public canvasHeight!: number;
@@ -123,7 +124,7 @@ export class CanvasService {
     for (let i = 0; i < this.canvasWidth; i++) {
       this.tabToDraw[i] = new Array(this.canvasHeight);
       for (let j = 0; j < this.canvasHeight; j++) {
-        this.tabToDraw[i][j] = this.backgroundColor;
+        this.tabToDraw[i][j] = Color.createFromRgba(this.backgroundColor);
       }
     }
   }
@@ -141,7 +142,7 @@ export class CanvasService {
    * Méthode qui calcule et renvoie le tableau des couleurs calculées selon la fractale
    * @returns string[][] tableau contenant les couleurs calculées des pixels du canvas
    */
-  public async updateTabToDraw(): Promise<string[][]> {
+  public async updateTabToDraw(): Promise<Color[][]> {
       const max = (this.canvasWidth * this.canvasHeight) - 1;
       //this.setCalcFractalProgress(0);
       //this.calcFractalProgressObs$.next(0);
@@ -152,7 +153,7 @@ export class CanvasService {
 
       let cpt = 0;
       let pix = new Pixel(0, 0);
-      let tabToDraw: string[][] = new Array(this.canvasWidth);
+      let tabToDraw: Color[][] = new Array(this.canvasWidth);
       for (let i = 0; i < this.canvasWidth; i++) {
         tabToDraw[i] = new Array(this.canvasHeight);
         for (let j = 0; j < this.canvasHeight; j++) {
@@ -194,6 +195,7 @@ export class CanvasService {
   public loadImageFromTab(): void {
     for (let i = 0; i < this.canvasWidth; i++) {
       for (let j = 0; j < this.canvasHeight; j++) {
+        /*
         let str = this.tabToDraw[i][j].substring(5);
         str = str.substring(0, str.length - 1);
         let tabVal = str.split(',');
@@ -201,12 +203,17 @@ export class CanvasService {
         let green: number = parseInt(tabVal[1]);
         let blue: number = parseInt(tabVal[2]);
         let alpha: number = parseFloat(tabVal[3]);
+*/
+        let red: number = this.tabToDraw[i][j].getRed();
+        let green: number = this.tabToDraw[i][j].getGreen();
+        let blue: number = this.tabToDraw[i][j].getBlue();
+        let alpha: number = this.tabToDraw[i][j].getAlpha();
 
         let indice: number = (j * this.canvasWidth * 4) + (i * 4);
         this.imageData.data[indice] = red;
         this.imageData.data[indice + 1] = green;
         this.imageData.data[indice + 2] = blue;
-        this.imageData.data[indice + 3] = Math.round(alpha*255);
+        this.imageData.data[indice + 3] = alpha;
       }
     }
     //this.imageData.data = this.data;

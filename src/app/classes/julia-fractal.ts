@@ -1,4 +1,5 @@
 import { GraphicLibrary } from "../libraries/graphic-library";
+import { Color } from "./color";
 import { ComplexNb } from "./complex-nb";
 
 /*
@@ -55,8 +56,8 @@ export class JuliaFractal {
     * et le nombre d'itération maximum de la boucle de calcul de la fractale
     * @return color colorToReturn : couleur calculée par le traitement de z selon fractal
     */
-   calcColorFromJuliaFractal(z: ComplexNb, gradientStart: number, gradientRange: number, bgColor: string): string { // ComplexNb c, Double limitModule, Integer maxIteration
-     let colorToReturn = bgColor;
+   calcColorFromJuliaFractal(z: ComplexNb, gradientStart: number, gradientRange: number, bgColor: string): Color { // ComplexNb c, Double limitModule, Integer maxIteration
+     let colorToReturn = new Color(0,0,0,255);
      let c = this.getSeed();
      let limitModule = this.getLimit();
      let iteration = this.getMaxIt();
@@ -75,7 +76,7 @@ export class JuliaFractal {
        iteration--;
      }
      if (iteration > 0) {
-       colorToReturn = bgColor;
+       colorToReturn = Color.createFromRgba(bgColor);
      } else {
        colorToReturn = GraphicLibrary.calculateRVB(module, limitModule, gradientStart, gradientRange);
      }
