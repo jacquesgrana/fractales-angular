@@ -1,6 +1,5 @@
-import { newArray } from '@angular/compiler/src/util';
 import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ComplexNb } from '../classes/complex-nb';
 import { JuliaFractal } from '../classes/julia-fractal';
 import { Pixel } from '../classes/pixel';
@@ -8,6 +7,10 @@ import { Point } from '../classes/point';
 import { Scene } from '../classes/scene';
 import { GraphicLibrary } from '../libraries/graphic-library';
 
+
+/**
+ * Classe du service qui gère le canvas
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -41,7 +44,6 @@ export class CanvasService {
   public iterNb: number = 100;
 
   public gradientStart: number = 3;
-  //public gradientRange: number = 2;
   public gradientEnd: number = 5;
 
   public isFractalDisplayed: boolean = true;
@@ -71,6 +73,9 @@ export class CanvasService {
 
   }
 
+  /**
+   * Méthode d'initialisation de la liste des fractales
+   */
   initFractalList(): void {
     let length: number = 0;
     this.fractals = new Array<JuliaFractal>();
@@ -92,6 +97,9 @@ export class CanvasService {
     //console.log('nombre de fractales dans la liste :', length);
   }
 
+  /**
+   * Méthode d'initialisation des données du service
+   */
   public initService(): void {
     this.initTabToDraw();
     this.angle = 0;
@@ -107,6 +115,9 @@ export class CanvasService {
     //this.data = this.imageData.data;
   }
 
+  /**
+   * Méthode d'initialisation du tableau qui sera affiché dans le canvas
+   */
   private initTabToDraw(): void {
     this.tabToDraw = new Array(this.canvasWidth);
     for (let i = 0; i < this.canvasWidth; i++) {
@@ -117,13 +128,19 @@ export class CanvasService {
     }
   }
 
+  /**
+   * Méthode d'initialisation de l'imageData du canvas
+   */
   public initImageData(): void {
     this.imageData = this.context.createImageData(this.canvasWidth, this.canvasHeight);
     //this.data = this.imageData.data;
   }
 
 
-  // TODO rendre asynchrone
+  /**
+   * Méthode qui calcule et renvoie le tableau des couleurs calculées selon la fractale
+   * @returns string[][] tableau contenant les couleurs calculées des pixels du canvas
+   */
   public async updateTabToDraw(): Promise<string[][]> {
       const max = (this.canvasWidth * this.canvasHeight) - 1;
       //this.setCalcFractalProgress(0);
@@ -171,6 +188,9 @@ export class CanvasService {
 
   }
 
+  /**
+   * Méthode qui copie les couleurs du tableau vers l'imageData.data du canvas
+   */
   public loadImageFromTab(): void {
     for (let i = 0; i < this.canvasWidth; i++) {
       for (let j = 0; j < this.canvasHeight; j++) {
@@ -192,6 +212,9 @@ export class CanvasService {
     //this.imageData.data = this.data;
   }
 
+  /**
+   * Méthode qui met à jour l'affichage du canvas
+   */
   public updateDisplay(): void {
     //this.calcFractalProgressObs$.next(0);
     this.currentScene.updateMatrix();
@@ -206,6 +229,9 @@ export class CanvasService {
 
     }
 
+    /**
+     * Méthode qui affiche le canvas sans la fractale (canvas rempli par la couleur du background)
+     */
   drawBlank(): void {
     //this.canvasService.updateTabToDraw();
     this.initImageData();
@@ -218,6 +244,9 @@ export class CanvasService {
 
 
 
+  /**
+   * Méthode qui affiche la fractale
+   */
   drawFractal(): void {
     this.initImageData();
     this.updateTabToDraw().then(
@@ -233,10 +262,9 @@ export class CanvasService {
 
   }
 
-  setCalcFractalProgress(value: number): void {
-    this.calcFractalProgress = value;
-  }
-
+/**
+ * Méthode qui met à jour la fractale selon les valeurs choisies dans les réglages
+ */
   uptadeFractal(): void {
     //console.log("update fractale");
 
@@ -247,6 +275,9 @@ export class CanvasService {
     this.updateDisplay();
   }
 
+  /**
+   * Méthode qui met à jour les valeurs bindées à partir de la fractale
+   */
   changeFractal(): void {
     this.real = this.fractal.getSeed().getReal();
     this.imag = this.fractal.getSeed().getImag();
@@ -255,6 +286,9 @@ export class CanvasService {
     this.updateDisplay();
   }
 
+  /**
+   * Méthode qui dessine les axes
+   */
   drawAxes() {
     const originPt = new Point(0.0, 0.0);
     const originPx = GraphicLibrary.calcPixelFromPoint(originPt, this.currentScene, this.canvasWidth, this.canvasHeight);
@@ -271,17 +305,37 @@ export class CanvasService {
     this.drawCircle(originPt, 8, false, 1, this.axesColor, this.originColor, this.context);
   }
 
-  drawLine(startPt: Point, endPt: Point, stokeWeight: number, strokeColor: string, context: CanvasRenderingContext2D): void {
+  /**
+   * Méthode qui dessine une ligne, dans le contexte context, de startPt à endPt, d'épaisseur strokeWeight,
+   * de couleur de contour strokeColor
+   * @param startPt
+   * @param endPt
+   * @param strokeWeight
+   * @param strokeColor
+   * @param context
+   */
+  drawLine(startPt: Point, endPt: Point, strokeWeight: number, strokeColor: string, context: CanvasRenderingContext2D): void {
     const startPix = GraphicLibrary.calcPixelFromPoint(startPt, this.currentScene, this.canvasWidth, this.canvasHeight);
     const endPix = GraphicLibrary.calcPixelFromPoint(endPt, this.currentScene, this.canvasWidth, this.canvasHeight);
     context.beginPath();
     context.moveTo(startPix.getI(), startPix.getJToDraw(this.canvasHeight));
     context.lineTo(endPix.getI(), endPix.getJToDraw(this.canvasHeight));
     context.strokeStyle = strokeColor;
-    context.lineWidth = stokeWeight;
+    context.lineWidth = strokeWeight;
     context.stroke();
   }
 
+  /**
+   * Méthode qui dessine un cercle, dane les contexte context, ayant pour centre centerPt, de rayon radius, rempli ou non selon isFilled,
+   * de couleur de contour strokeColor et de couleur de remplissage fillColor
+   * @param centerPt
+   * @param radius
+   * @param isFilled
+   * @param stokeWeight
+   * @param strokeColor
+   * @param fillColor
+   * @param context
+   */
   drawCircle(centerPt: Point, radius: number, isFilled: boolean, stokeWeight: number, strokeColor: string, fillColor: string, context: CanvasRenderingContext2D): void {
     const centerPix = GraphicLibrary.calcPixelFromPoint(centerPt, this.currentScene, this.canvasWidth, this.canvasHeight);
     context.beginPath();

@@ -100,11 +100,12 @@
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
   background-color: $components-background-color-bis;
   color: $components-foreground-color;
-  border-radius: 5px;
+  border-radius: $components-border-radius / 2;
 }
 
 .label {
   font-size: 1.4rem;
+  margin-top: 0.5rem;
 }
 
 .input {
@@ -132,9 +133,24 @@
   border: 1px solid black;
 }
 
+.mat-divider {
+  border-top-color: $components-background-color;
+  border: ($components-border-thickness / 2) solid black;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 0rem;
+  //border-style: dotted;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  border: ($components-border-thickness / 2) solid black;
+}
+
 
 ::ng-deep .mat-form-field {
   //background-color:$components-background-color-bis !important;
+  //border: ($components-border-thickness / 2) solid black;
   .mat-input-element {
       color: $components-foreground-color;
       background-color: $components-background-color-bis;

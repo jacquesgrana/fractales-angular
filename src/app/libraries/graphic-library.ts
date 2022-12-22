@@ -3,6 +3,7 @@ import { Point } from "../classes/point";
 import { Scene } from "../classes/scene";
 import { MatrixLibrary } from "./matrix-library";
 import { Matrix } from 'src/app/classes/matrix';
+import { Color } from "../classes/color";
 
 export class GraphicLibrary {
   /*
@@ -55,6 +56,7 @@ static calculateRVB(value: number, limit: number, start: number, range: number):
       blue = Math.round(255 - (x - 5)*255);
     }
   }
+  let colorToReturn = new Color(red, green, blue, 255);
   return "rgba(" + red + ", " + green + ", " + blue + ", " + 1.0 + ")";
   //return color(red, green, blue);
 }
