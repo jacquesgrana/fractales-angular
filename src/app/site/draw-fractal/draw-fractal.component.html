@@ -2,11 +2,11 @@
   <section class="block-container" id="block-container">
     <app-canvas></app-canvas>
     <div>
-      <p class="text-center">
-        Translation : x : {{canvasService.trans.getX() | number: '1.0-3'}}
-         / y : {{canvasService.trans.getY() | number: '1.0-3'}}
-         / rotation : {{canvasService.angle | number: '1.0-3'}}
-         ° / zoom : {{canvasService.zoom | number: '1.0-3'}}
+      <p class="text-center text-infos text-color-white">
+        Translation : x : <span class="text-color-accent">{{canvasService.trans.getX() | number:'1.0-6':'fr-FR'}}</span>
+          / y : <span class="text-color-accent">{{canvasService.trans.getY() | number:'1.0-6':'fr-FR'}}</span>
+          | rotation : <span class="text-color-accent">{{canvasService.angle | number:'1.0-6':'fr-FR'}}</span>
+         ° | zoom : <span class="text-color-accent">{{100/canvasService.zoom | number:'1.0-6':'fr-FR'}}</span>%
       </p>
     </div>
     <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async"

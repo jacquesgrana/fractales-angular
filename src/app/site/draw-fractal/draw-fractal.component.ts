@@ -1,6 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnChanges, OnInit, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { GraphicLibrary } from 'src/app/libraries/graphic-library';
 import { CanvasService } from 'src/app/services/canvas.service';
+import localeFr from '@angular/common/locales/fr';
+import localeFrExtra from '@angular/common/locales/extra/fr';
+import { registerLocaleData, DecimalPipe, CurrencyPipe} from '@angular/common';
+registerLocaleData(localeFr, 'fr-FR', localeFrExtra);
 
 @Component({
   selector: 'app-draw-fractal',
@@ -19,36 +23,47 @@ export class DrawFractalComponent implements OnInit {
 
 
   constructor(public canvasService: CanvasService, private cd: ChangeDetectorRef
-    ) { //private cd: ChangeDetectorRef
-
-  }
+    ) {}
 
   ngOnInit(): void {
-    //this.updateCanvasDimensions();
     this.canvasService.cd = this.cd;
-
   }
 
+  /**
+   * Réinitialisation de la currensScene: Scene
+   */
   resetSceneValues(): void {
     this.canvasService.resetSceneValues();
     this.canvasService.updateDisplay();
   }
 
+  /**
+   * Réinitialisation de la fractale: JuliaFractale
+   */
   resetFractal(): void {
     this.canvasService.resetFractal();
     this.canvasService.updateDisplay();
   }
 
+  /**
+   * Affiche/masque la fractale
+   */
   toggleFractalDisplay(): void {
     this.canvasService.isFractalDisplayed = !this.canvasService.isFractalDisplayed;
     this.canvasService.updateDisplay();
   }
 
+  /**
+   * Affiche/masque les axes
+   */
   toggleAxesDisplay(): void {
     this.canvasService.isAxesDisplayed = !this.canvasService.isAxesDisplayed;
     this.canvasService.updateDisplay();
   }
 
+  /**
+   * Affiche/masque les réglages de la fractales
+   */
   toggleSettingsDisplay(): void {
     this.canvasService.isSettingsDisplayed = !this.canvasService.isSettingsDisplayed;
     if(this.canvasService.isSettingsDisplayed) {
@@ -56,28 +71,50 @@ export class DrawFractalComponent implements OnInit {
     }
   }
 
+  /**
+   * Affiche/masque l'aide
+   */
   toggleHelpDisplay(): void {
     this.canvasService.isHelpDisplayed = !this.canvasService.isHelpDisplayed;
   }
 
+  /**
+   * Met à jour les trois dégradés des réglages de la fractale (canvas)
+   */
   updateGradients(): void {
     this.updateStartGradient();
     this.updateEndGradient();
     this.updateResultGradient();
   }
 
+  /**
+   * Met à jour le canvas du résultat des choix des couleurs
+   */
   updateResultGradient(): void {
     this.drawGradientInCanvas(this.canvasResult, this.canvasService.gradientStart, this.canvasService.gradientEnd - this.canvasService.gradientStart);
   }
 
+  /**
+   * Met à jour le canvas du choix du début du dégradé
+   */
   updateStartGradient(): void {
    this.drawGradientInCanvas(this.canvasStart, 0, this.canvasService.gradientEnd - 1);
   }
 
+  /**
+   * Met à jour le canvas du choix de la fin du dégradé
+   */
   updateEndGradient(): void {
     this.drawGradientInCanvas(this.canvasEnd, this.canvasService.gradientStart + 1, 5 - this.canvasService.gradientStart);
   }
 
+  /**
+   * Dessine un dégradé dans le canvas depuis start sur range
+   *
+   * @param canvas
+   * @param start
+   * @param range
+   */
   drawGradientInCanvas(canvas: ElementRef, start: number, range: number): void {
     let contextCanvasResult = <CanvasRenderingContext2D>canvas.nativeElement.getContext('2d');
     let imageDataResult= contextCanvasResult.createImageData(340, 8);
@@ -95,6 +132,11 @@ export class DrawFractalComponent implements OnInit {
     contextCanvasResult.putImageData(imageDataResult, 0, 0);
   }
 
+  /**
+   * Listener du clavier
+   *
+   * @param event
+   */
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvents(event: KeyboardEvent) {
     let Tx: number = 0;

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DrawFractalComponent } from './draw-fractal.component';
 import { MaterialModule } from 'src/app/material-module';
@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -30,6 +31,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   ],
   exports: [
     CanvasComponent
-  ]
+  ],
+  providers: [{
+    provide: LOCALE_ID,
+    useValue: 'fr'
+   }]
 })
 export class DrawFractalModule { }
