@@ -34,7 +34,7 @@ export class CanvasService {
   public originColor: string = 'rgba(255,255,255,0.62)';
 
   public currentScene!: Scene;
-  public trans!: Point;
+  public trans: Point = new Point(0, 0);;
   public angle!: number;
   public zoom!: number;
 
@@ -305,6 +305,8 @@ export class CanvasService {
     this.currentScene.getTrans().setX(Tx);
     this.currentScene.getTrans().setY(Ty);
     this.currentScene.updateMatrix();
+
+    this.zoom = this.currentScene.getZoom();
     //this.updateDisplay();
     //this.centerOnPixel(newCenterPix);
     this.updateDisplay();
@@ -385,7 +387,7 @@ export class CanvasService {
 
   public resetFractal(): void {
     //this.fractal
-    this.fractals = this.fractals.filter(f => f.getId() !== this.fractal.getId());
+    //this.fractals = this.fractals.filter(f => f.getId() !== this.fractal.getId());
     let fractalInit = this.fractalsInit.filter(f => f.getId() === this.fractal.getId())[0].clone();
     this.fractal.setId(fractalInit.getId());
     this.fractal.setName(fractalInit.getName());
@@ -393,7 +395,7 @@ export class CanvasService {
     this.fractal.getSeed().setImag(fractalInit.getSeed().getImag());
     this.fractal.setLimit(fractalInit.getLimit());
     this.fractal.setMaxIt(fractalInit.getMaxIt());
-    this.fractals.push(this.fractal);
+    //this.fractals.push(this.fractal);
     //console.log('this.fractal', this.fractal.toString());
 
     this.real = this.fractal.getSeed().getReal();

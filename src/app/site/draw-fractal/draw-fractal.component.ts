@@ -137,6 +137,7 @@ export class DrawFractalComponent implements OnInit {
         //console.log('touche a');
         this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() - 5.0);
         this.canvasService.currentScene.updateMatrix();
+        this.canvasService.angle = this.canvasService.currentScene.getAngle();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
@@ -144,6 +145,7 @@ export class DrawFractalComponent implements OnInit {
         //console.log('touche z');
         this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() + 5.0);
         this.canvasService.currentScene.updateMatrix();
+        this.canvasService.angle = this.canvasService.currentScene.getAngle();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
@@ -151,6 +153,7 @@ export class DrawFractalComponent implements OnInit {
         //console.log('touche q');
         this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 1.05);
         this.canvasService.currentScene.updateMatrix();
+        this.canvasService.zoom = this.canvasService.currentScene.getZoom();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
@@ -158,6 +161,7 @@ export class DrawFractalComponent implements OnInit {
         //console.log('touche s');
         this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 0.95);
         this.canvasService.currentScene.updateMatrix();
+        this.canvasService.zoom = this.canvasService.currentScene.getZoom();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;

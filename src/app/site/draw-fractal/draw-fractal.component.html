@@ -1,6 +1,14 @@
 <div class="body-container">
   <section class="block-container" id="block-container">
     <app-canvas></app-canvas>
+    <div>
+      <p class="text-center">
+        Translation : x : {{canvasService.trans.getX() | number: '1.0-3'}}
+         / y : {{canvasService.trans.getY() | number: '1.0-3'}}
+         / rotation : {{canvasService.angle | number: '1.0-3'}}
+         ° / zoom : {{canvasService.zoom | number: '1.0-3'}}
+      </p>
+    </div>
     <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async"
       class="progress-bar"></mat-progress-bar>
     <!-- (canvasService.calcFractalProgressObs$ | async) || 0 / canvasService.calcFractalProgress -->
