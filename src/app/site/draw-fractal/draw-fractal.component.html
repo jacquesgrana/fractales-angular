@@ -2,7 +2,7 @@
   <section class="block-container" id="block-container">
     <app-canvas></app-canvas>
     <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async"
-      class=""></mat-progress-bar>
+      class="progress-bar"></mat-progress-bar>
     <!-- (canvasService.calcFractalProgressObs$ | async) || 0 / canvasService.calcFractalProgress -->
     <section class="block">
       <div class="div-row">
@@ -18,6 +18,8 @@
             <button mat-flat-button color="primary" class="button-gen"
           (click)="toggleHelpDisplay()">{{canvasService.isHelpDisplayed ? "Masquer l'aide" : "Afficher l'aide"}}&#160;<mat-icon class="text-color-accent">{{canvasService.isHelpDisplayed ? "visibility_off" :
             "visibility_on"}}</mat-icon></button>
+            <button mat-flat-button color="primary" class="button-gen"
+          (click)="resetSceneValues()">Réinitialiser<mat-icon class="text-color-accent">restore</mat-icon></button>
       </div>
       <div [hidden]="!canvasService.isHelpDisplayed" class="div-row-settings flex-center">
         <h3 class="text-color-accent div-row-title mt-5 me-1 ms-1 text-center">Aide</h3>
@@ -53,47 +55,26 @@
 
           <mat-form-field appearance="outline" color="accent" class="form-field">
             <mat-label for="real" class="label">Partie réelle</mat-label>
-            <input matInput type="number" min="-4" max="4" step="0.001" name="real" [(ngModel)]="canvasService.real"
-              class="input">
-
-            <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
-            <mat-slider min="-4" max="4" step="0.001" [thumbLabel]="true" [(ngModel)]="canvasService.real" discrete
-              class="slider"> <!-- [displayWith]="formatLabel" -->
-              <!--<input matSliderThumb>-->
+            <input matInput type="number" min="-4" max="4" step="0.001" name="real" [(ngModel)]="canvasService.real" class="input">
+            <mat-slider min="-4" max="4" step="0.001" [thumbLabel]="true" [(ngModel)]="canvasService.real" discrete class="slider">
             </mat-slider>
           </mat-form-field>
-
           <mat-form-field appearance="outline" color="accent" class="form-field">
             <mat-label for="imag" class="label">Partie imaginaire</mat-label>
-            <input matInput type="number" min="-4" max="4" step="0.001" name="imag" [(ngModel)]="canvasService.imag"
-              class="input">
-
-            <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
-            <mat-slider min="-4" max="4" step="0.001" [thumbLabel]="true" [(ngModel)]="canvasService.imag" discrete
-              class="slider"> <!-- [displayWith]="formatLabel" -->
-              <!--<input matSliderThumb>-->
+            <input matInput type="number" min="-4" max="4" step="0.001" name="imag" [(ngModel)]="canvasService.imag" class="input">
+            <mat-slider min="-4" max="4" step="0.001" [thumbLabel]="true" [(ngModel)]="canvasService.imag" discrete class="slider">
             </mat-slider>
           </mat-form-field>
           <mat-form-field appearance="outline" color="accent" class="form-field">
             <mat-label for="limit" class="label">Limite</mat-label>
-            <input matInput type="number" min="0" max="10" step="0.1" name="limit" [(ngModel)]="canvasService.limit"
-              class="input">
-
-            <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
-            <mat-slider min="0" max="10" step="0.1" [thumbLabel]="true" [(ngModel)]="canvasService.limit" discrete
-              class="slider"> <!-- [displayWith]="formatLabel" -->
-              <!--<input matSliderThumb>-->
+            <input matInput type="number" min="0" max="10" step="0.1" name="limit" [(ngModel)]="canvasService.limit" class="input">
+            <mat-slider min="0" max="10" step="0.1" [thumbLabel]="true" [(ngModel)]="canvasService.limit" discrete class="slider">
             </mat-slider>
           </mat-form-field>
           <mat-form-field appearance="outline" color="accent" class="form-field">
             <mat-label for="iterNb" class="label">Nombre maximum d'itérations</mat-label>
-            <input matInput type="number" min="5" max="1000" step="5" name="iterNb" [(ngModel)]="canvasService.iterNb"
-              class="input">
-
-            <!-- (ngModelChange)="canvasService.uptadeFractal()" -->
-            <mat-slider min="5" max="1000" step="5" [thumbLabel]="true" [(ngModel)]="canvasService.iterNb" discrete
-              class="slider"> <!-- [displayWith]="formatLabel" -->
-              <!--<input matSliderThumb>-->
+            <input matInput type="number" min="5" max="1000" step="5" name="iterNb" [(ngModel)]="canvasService.iterNb" class="input">
+            <mat-slider min="5" max="1000" step="5" [thumbLabel]="true" [(ngModel)]="canvasService.iterNb" discrete class="slider">
             </mat-slider>
           </mat-form-field>
 
@@ -121,8 +102,13 @@
           </div>
         </div>
         <mat-divider class="mb-3"></mat-divider>
-        <button mat-flat-button color="primary" class="button-gen mb-3"
-          (click)="canvasService.uptadeFractal()">Appliquer les modifications&#160;<mat-icon class="text-color-accent">done</mat-icon></button>
+        <div class="div-row-2">
+          <button mat-flat-button color="primary" class="button-gen mb-3"
+          (click)="canvasService.uptadeFractal()">Appliquer&#160;<mat-icon class="text-color-accent">done</mat-icon></button>
+          <button mat-flat-button color="primary" class="button-gen mb-3"
+          (click)="resetFractal()">Réinitialiser&#160;<mat-icon class="text-color-accent">restore</mat-icon></button>
+        </div>
+
       </div>
     </section>
   </section>

@@ -1,8 +1,10 @@
 @import "src/library";
 @import "src/theme";
 
+canvas,
 #canvas {
   border: $components-border-thickness solid black;
   margin: 40px;
   margin-right:40px;
+  min-height: 800px;
 }

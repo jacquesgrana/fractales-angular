@@ -6,6 +6,7 @@ import { ComplexNb } from "./complex-nb";
  * Classe représentant les paramètres de calcul de la fractale de Julia
  */
 export class JuliaFractal {
+  private id: number;
   private name: string;
   private seed: ComplexNb; // seed (c) de la fractale
   private limit: number; // limite du module de la boucle de calcul de la fractale
@@ -14,13 +15,17 @@ export class JuliaFractal {
   /*
    * Constructeur
    */
-  constructor(name: string, seed: ComplexNb, limit: number, maxIt: number) {
+  constructor(id: number, name: string, seed: ComplexNb, limit: number, maxIt: number) {
+    this.id = id;
     this.name = name;
     this.seed = seed;
    this.limit = limit;
    this.maxIt = maxIt;
   }
 
+  getId(): number {
+    return this.id;
+  }
   getName(): string {
     return this.name
   }
@@ -34,6 +39,9 @@ export class JuliaFractal {
    return this.maxIt;
   }
 
+  setId(id: number): void {
+    this.id = id;
+  }
   setName(name: string): void {
     this.name = name;
   }
@@ -83,7 +91,12 @@ export class JuliaFractal {
      return colorToReturn;
    }
 
-  toString() {
-   return ("seed : ( " + this.seed.toString() + " ) limit : " + this.limit + " maxIt : " + this.maxIt);
+   clone(): JuliaFractal {
+    return new JuliaFractal(this.getId(), this.getName(), this.getSeed().clone(), this.getLimit(), this.getMaxIt());
+    //return JSON.parse(JSON.stringify(this));
+   }
+
+  toString(): string {
+   return ("id : " + this.id + " seed : ( " + this.seed.toString() + " ) limit : " + this.limit + " maxIt : " + this.maxIt);
   }
  }

@@ -40,6 +40,7 @@ export class CanvasService {
 
   public fractal!: JuliaFractal;
   public fractals!: Array<JuliaFractal>;
+  public fractalsInit!: Array<JuliaFractal>;
 
   public real: number = 0;
   public imag: number = 0;
@@ -87,22 +88,29 @@ export class CanvasService {
   initFractalList(): void {
     let length: number = 0;
     this.fractals = new Array<JuliaFractal>();
-    length = this.fractals.push(new JuliaFractal("Classique", new ComplexNb(true, -0.4, -0.59), 2, 150));
-    length = this.fractals.push(new JuliaFractal("Pas mal", new ComplexNb(true, 0.355534, -0.337292), 2, 1000));
-    length = this.fractals.push(new JuliaFractal("A voir", new ComplexNb(true, -0.4, -0.59), 2, 100));
-    length = this.fractals.push(new JuliaFractal("Jolie", new ComplexNb(true, -0.54, 0.54), 2, 100));
-    length = this.fractals.push(new JuliaFractal("A zoomer", new ComplexNb(true, 0.355, 0.355), 2, 100));
-    length = this.fractals.push(new JuliaFractal("Cool", new ComplexNb(true, -0.7, 0.27015), 2, 200));
-    length = this.fractals.push(new JuliaFractal("Ouech", new ComplexNb(true, 0.285, 0.01), 2, 75));
-    length = this.fractals.push(new JuliaFractal("Strange", new ComplexNb(true, -1.417022285618, 0.0099534), 2, 20));
-    length = this.fractals.push(new JuliaFractal("Si on veut", new ComplexNb(true, -0.038088, 0.9754633), 2, 20));
-    length = this.fractals.push(new JuliaFractal("Faut voir...", new ComplexNb(true, 0.285, 0.013), 2, 200));
-    length = this.fractals.push(new JuliaFractal("Arrg", new ComplexNb(true, -0.4, 0.6), 2, 100));
-    length = this.fractals.push(new JuliaFractal("Wow", new ComplexNb(true, -0.8, 0.156), 2, 150));
-    length = this.fractals.push(new JuliaFractal("Waouw", new ComplexNb(true, 0.0, 0.8), 2, 25));
-    length = this.fractals.push(new JuliaFractal("Hé bé", new ComplexNb(true, 0.3, 0.5), 2, 50));
-    length = this.fractals.push(new JuliaFractal("Voilà", new ComplexNb(true, -0.8, 0.0), 2, 200));
+    this.fractalsInit = new Array<JuliaFractal>();
+
+    length = this.fractals.push(new JuliaFractal(0, "Classique", new ComplexNb(true, -0.4, -0.59), 2, 150));
+    length = this.fractals.push(new JuliaFractal(1, "Pas mal", new ComplexNb(true, 0.355534, -0.337292), 2, 1000));
+    length = this.fractals.push(new JuliaFractal(2, "A voir", new ComplexNb(true, -0.4, -0.59), 2, 100));
+    length = this.fractals.push(new JuliaFractal(3, "Jolie", new ComplexNb(true, -0.54, 0.54), 2, 100));
+    length = this.fractals.push(new JuliaFractal(4, "A zoomer", new ComplexNb(true, 0.355, 0.355), 2, 100));
+    length = this.fractals.push(new JuliaFractal(5, "Cool", new ComplexNb(true, -0.7, 0.27015), 2, 200));
+    length = this.fractals.push(new JuliaFractal(6, "Ouech", new ComplexNb(true, 0.285, 0.01), 2, 75));
+    length = this.fractals.push(new JuliaFractal(7, "Strange", new ComplexNb(true, -1.417022285618, 0.0099534), 2, 20));
+    length = this.fractals.push(new JuliaFractal(8, "Si on veut", new ComplexNb(true, -0.038088, 0.9754633), 2, 20));
+    length = this.fractals.push(new JuliaFractal(9, "Faut voir...", new ComplexNb(true, 0.285, 0.013), 2, 200));
+    length = this.fractals.push(new JuliaFractal(10, "Arrg", new ComplexNb(true, -0.4, 0.6), 2, 100));
+    length = this.fractals.push(new JuliaFractal(11, "Wow", new ComplexNb(true, -0.8, 0.156), 2, 150));
+    length = this.fractals.push(new JuliaFractal(12, "Waouw", new ComplexNb(true, 0.0, 0.8), 2, 25));
+    length = this.fractals.push(new JuliaFractal(13, "Hé bé", new ComplexNb(true, 0.3, 0.5), 2, 50));
+    length = this.fractals.push(new JuliaFractal(14, "Voilà", new ComplexNb(true, -0.8, 0.0), 2, 200));
     //console.log('nombre de fractales dans la liste :', length);
+    let i: number = 0;
+    this.fractals.forEach(f => {
+      i = this.fractalsInit.push(f.clone());
+    });
+    //console.log('nombre de fractales dans la liste init :', i);
   }
 
   /**
@@ -215,66 +223,90 @@ export class CanvasService {
   }
 
   public centerOnPixel(center: Pixel): void {
-    console.log('appel centerOnPixel : center :', center.toString());
+    //console.log('appel centerOnPixel : center :', center.toString());
+    let centerOriginPix = new Pixel(Math.round(center.getI() - (this.canvasWidth / 2)), Math.round(center.getJ() - (this.canvasHeight / 2)));
+    let centerOriginPt: Point = GraphicLibrary.calcPointFromPix(centerOriginPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+    //console.log('centerPt :', centerOriginPt.toString());
 
-    let centerPt: Point = GraphicLibrary.calcPointFromPix(center, this.currentScene, this.canvasWidth, this.canvasHeight);
-    let originPt: Point = GraphicLibrary.transfInv(centerPt, this.currentScene);
-    //console.log('center pt : x :', centerPt.getX(), ' y :', centerPt.getY());
-    this.currentScene.setMinX(originPt.getX() - (this.currentScene.getRangeX() / 2));
-    this.currentScene.setMinY(originPt.getY() - (this.currentScene.getRangeY() / 2));
-    //console.log('min x :', this.currentScene.getMinX(), 'min y :', this.currentScene.getMinY());
-    //this.currentScene.updateMatrix();
+    let originPix: Pixel = new Pixel(0,0);
+    let originPt: Point = GraphicLibrary.calcPointFromPix(originPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+
+    //console.log('originPt :', originPt.toString());
+
+
+    let Tx: number = this.currentScene.getTrans().getX() + (centerOriginPt.getX() - originPt.getX());
+    let Ty: number = this.currentScene.getTrans().getY() + (centerOriginPt.getY() - originPt.getY());
+    //console.log('Tx :', Tx, 'Ty :', Ty);
+
+    this.currentScene.getTrans().setX(Tx);
+    this.currentScene.getTrans().setY(Ty);
+    this.currentScene.updateMatrix();
     this.updateDisplay();
-
 
   }
 
   public zoomIn(start: Pixel, end: Pixel): void {
-
-
-
-    console.log('appel zoom in : start : ', start.toString(), ' : end :', end.toString());
+    //console.log('appel zoom in : start : ', start.toString(), ' : end :', end.toString());
     let startPt: Point = GraphicLibrary.calcPointFromPix(start, this.currentScene, this.canvasWidth, this.canvasHeight);
-    startPt = GraphicLibrary.transfInv(startPt, this.currentScene);
+    //startPt = GraphicLibrary.transfInv(startPt, this.currentScene);
 
     let endPt: Point = GraphicLibrary.calcPointFromPix(end, this.currentScene, this.canvasWidth, this.canvasHeight);
-    endPt = GraphicLibrary.transfInv(endPt, this.currentScene);
+    //endPt = GraphicLibrary.transfInv(endPt, this.currentScene);
 
-    let deltaX: number = Math.abs(endPt.getX() - startPt.getX());
-    let deltaY: number = Math.abs(endPt.getY() - startPt.getY());
-    let max: number = Math.max(deltaX, deltaY);
+    let deltaX: number = endPt.getX() - startPt.getX();
+    let deltaY: number = endPt.getY() - startPt.getY();
+
+    let newCenterPix: Pixel = new Pixel(Math.round((start.getI() + end.getI())/2), Math.round((start.getJ() + end.getJ())/2));
+    //let max: number = Math.max(deltaX, deltaY);
+    let newCenterPt: Point = GraphicLibrary.calcPointFromPix(newCenterPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+
+    let minPix: Pixel = new Pixel(0,0);
+    let maxPix: Pixel = new Pixel(this.canvasWidth - 1, this.canvasHeight - 1);
+    let minPt: Point = GraphicLibrary.calcPointFromPix(minPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+    let maxPt: Point = GraphicLibrary.calcPointFromPix(maxPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+
+    let startDeltaX: number = maxPt.getX() - minPt.getX();
+    let startDeltaY: number = maxPt.getY() - minPt.getY();
+
+
     //console.log('deltas : deltaX :', deltaX, ' : deltaY :', deltaY);
     //console.log('max :', max);
+    let zoom: number = 0.5;
+
+
     if (this.canvasWidth > this.canvasHeight) {
-      this.currentScene.setRangeY(max);
-      this.currentScene.setRangeX(max * this.canvasWidth / this.canvasHeight)
+      // comparaison sur deltaY
+      zoom = Math.abs(deltaX / startDeltaX);
     }
     else if (this.canvasWidth < this.canvasHeight) {
-      this.currentScene.setRangeX(max);
-      this.currentScene.setRangeY(max * this.canvasHeight / this.canvasWidth);
+      // comparaison sur deltaX
+      zoom = Math.abs(deltaY / startDeltaY);
     }
     else if (this.canvasWidth === this.canvasHeight) {
-      this.currentScene.setRangeX(max);
-      this.currentScene.setRangeY(max);
+      zoom = Math.abs(deltaX / startDeltaX);
     }
 
-    this.currentScene.setMinX(Math.min(startPt.getX(), endPt.getX()));
-    this.currentScene.setMinY(Math.min(startPt.getY(), endPt.getY()));
+    console.log('zoom :', zoom);
 
+    let centerPix = new Pixel(Math.round(this.canvasWidth / 2) -1,Math.round(this.canvasHeight / 2) -1);
+    let centerPt: Point = GraphicLibrary.calcPointFromPix(centerPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+
+    let pt = new Point(0,0);
 
     //this.currentScene.updateMatrix();
-    //let centerPix = new Pixel(Math.round((start.getI() + end.getI()) / 2), Math.round((start.getJ() + end.getJ()) / 2));
+    // TODO centrer sur le pt et par sur le pixel
+    let Tx = this.currentScene.getTrans().getX() + newCenterPt.getX() - centerPt.getX();
+    let Ty = this.currentScene.getTrans().getY() + newCenterPt.getY() - centerPt.getY();
 
-    //console.log('centerPix :', centerPix.toString());
-    //this.centerOnPixel(centerPix);
-    /*
-    let centerPt: Point = GraphicLibrary.calcPointFromPix(centerPix, this.currentScene, this.canvasWidth, this.canvasHeight);
-    centerPt = GraphicLibrary.transfInv(centerPt, this.currentScene);
-    //let originPt: Point = GraphicLibrary.transfInv(centerPt, this.currentScene);
-    //console.log('center pt : x :', centerPt.getX(), ' y :', centerPt.getY());
-    this.currentScene.setMinX(centerPt.getX() - (this.currentScene.getRangeX() / 2));
-    this.currentScene.setMinY(centerPt.getY() - (this.currentScene.getRangeY() / 2));
-    */
+
+
+    //console.log('Tx :', Tx, 'Ty :', Ty);
+    this.currentScene.setZoom(this.currentScene.getZoom() * zoom);
+    this.currentScene.getTrans().setX(Tx);
+    this.currentScene.getTrans().setY(Ty);
+    this.currentScene.updateMatrix();
+    //this.updateDisplay();
+    //this.centerOnPixel(newCenterPix);
     this.updateDisplay();
   }
 
@@ -282,8 +314,7 @@ export class CanvasService {
    * Méthode qui met à jour l'affichage du canvas
    */
   public updateDisplay(): void {
-    //this.calcFractalProgressObs$.next(0);
-    this.currentScene.updateMatrix();
+    //this.currentScene.updateMatrix();
     if (this.isFractalDisplayed) {
       this.drawFractal();
     }
@@ -352,6 +383,53 @@ export class CanvasService {
     this.updateDisplay();
   }
 
+  public resetFractal(): void {
+    //this.fractal
+    this.fractals = this.fractals.filter(f => f.getId() !== this.fractal.getId());
+    let fractalInit = this.fractalsInit.filter(f => f.getId() === this.fractal.getId())[0].clone();
+    this.fractal.setId(fractalInit.getId());
+    this.fractal.setName(fractalInit.getName());
+    this.fractal.getSeed().setReal(fractalInit.getSeed().getReal());
+    this.fractal.getSeed().setImag(fractalInit.getSeed().getImag());
+    this.fractal.setLimit(fractalInit.getLimit());
+    this.fractal.setMaxIt(fractalInit.getMaxIt());
+    this.fractals.push(this.fractal);
+    //console.log('this.fractal', this.fractal.toString());
+
+    this.real = this.fractal.getSeed().getReal();
+    this.imag = this.fractal.getSeed().getImag();
+    this.limit = this.fractal.getLimit();
+    this.iterNb = this.fractal.getMaxIt();
+
+
+    this.gradientStart = 3;
+    this.gradientEnd = 5;
+
+    this.cd.detectChanges();
+  }
+
+  public resetSceneValues(): void {
+    //console.log('debut reserSceneValues');
+
+    this.angle = 0;
+    this.zoom = 1;
+    this.trans = new Point(0, 0);
+    const deltaY = 2;
+    const minY = -1;
+    const deltaX = deltaY * this.canvasWidth / this.canvasHeight;
+    const minX = -1 * deltaX / 2;
+
+    this.currentScene.setMinX(minX);
+    this.currentScene.setMinY(minY);
+    this.currentScene.setRangeX(deltaX);
+    this.currentScene.setRangeY(deltaY);
+    this.currentScene.setTrans(this.trans);
+    this.currentScene.setAngle(this.angle);
+    this.currentScene.setZoom(this.zoom);
+
+    this.currentScene.updateMatrix();
+  }
+
   /**
    * Méthode qui dessine les axes
    */
@@ -418,7 +496,7 @@ export class CanvasService {
   drawRect(startPt: Point, endPt: Point, isFilled: boolean, strokeWeight: number, strokeColor: string, fillColor: string, context: CanvasRenderingContext2D): void {
     const startPix = GraphicLibrary.calcPixelFromPoint(startPt, this.currentScene, this.canvasWidth, this.canvasHeight);
     const endPix = GraphicLibrary.calcPixelFromPoint(endPt, this.currentScene, this.canvasWidth, this.canvasHeight);
-    if(isFilled) {
+    if (isFilled) {
       context.fillStyle = fillColor;
       context.fillRect(startPix.getI(), startPix.getJ(), endPix.getI() - startPix.getI(), endPix.getJ() - startPix.getJ());
     }

@@ -29,31 +29,15 @@ export class DrawFractalComponent implements OnInit {
 
   }
 
-  updateCanvasDimensions() {
-    let element = document.getElementById('block-container');
-    let width = element?.offsetWidth;
-    let height = element?.offsetHeight;
-    //console.log('width :', width, ' height :', height);
-    if (width !== undefined) {
-      this.canvasWidth = width - 80;
-    }
-    if (height !== undefined) {
-      if (height - 80 > 600) {
-        this.canvasHeight = height - 80;
-      }
-      else {
-        this.canvasHeight = 600;
-      }
-    }
-    //console.log('canvas width :', this.canvasWidth, ' canvas height :', this.canvasHeight);
-    //console.log('ctx canvas width :', this.context.canvas.clientWidth, ' ctx canvas height :', this.context.canvas.clientHeight);
+  resetSceneValues(): void {
+    this.canvasService.resetSceneValues();
+    this.canvasService.updateDisplay();
   }
 
-  /*
-  formatLabel(value: number): string {
-    return `${value}`;
+  resetFractal(): void {
+    this.canvasService.resetFractal();
+    this.canvasService.updateDisplay();
   }
-  */
 
   toggleFractalDisplay(): void {
     this.canvasService.isFractalDisplayed = !this.canvasService.isFractalDisplayed;
@@ -119,15 +103,17 @@ export class DrawFractalComponent implements OnInit {
 
       case 'ArrowLeft':
         //console.log('touche gauche');
-        Tx = this.canvasService.currentScene.getTrans().getX() + 0.05 * this.canvasService.currentScene.getRangeX();
+        Tx = this.canvasService.currentScene.getTrans().getX() - 0.05 * this.canvasService.currentScene.getRangeX();
         this.canvasService.currentScene.getTrans().setX(Tx);
+        this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
       case 'ArrowRight':
         //console.log('touche droit');
-        Tx = this.canvasService.currentScene.getTrans().getX() - 0.05 * this.canvasService.currentScene.getRangeX();
+        Tx = this.canvasService.currentScene.getTrans().getX() + 0.05 * this.canvasService.currentScene.getRangeX();
         this.canvasService.currentScene.getTrans().setX(Tx);
+        this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
@@ -135,6 +121,7 @@ export class DrawFractalComponent implements OnInit {
         //console.log('touche haut');
         Ty = this.canvasService.currentScene.getTrans().getY() - 0.05 * this.canvasService.currentScene.getRangeY();
         this.canvasService.currentScene.getTrans().setY(Ty);
+        this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
@@ -142,30 +129,35 @@ export class DrawFractalComponent implements OnInit {
         //console.log('touche bas');
         Ty = this.canvasService.currentScene.getTrans().getY() + 0.05 * this.canvasService.currentScene.getRangeY();
         this.canvasService.currentScene.getTrans().setY(Ty);
+        this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
       case 'a':
         //console.log('touche a');
         this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() - 5.0);
+        this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
       case 'z':
         //console.log('touche z');
         this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() + 5.0);
+        this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
       case 'q':
         //console.log('touche q');
         this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 1.05);
+        this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
       case 's':
         //console.log('touche s');
         this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 0.95);
+        this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;

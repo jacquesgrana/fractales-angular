@@ -83,6 +83,10 @@ export class ComplexNb {
     return this.arg;
   }
 
+  clone(): ComplexNb {
+    return new ComplexNb(true, this.getReal(), this.getImag());
+  }
+
   toString(): string {
    return " real : " + this.real + " imag : " + this.imag + " mod : " + this.mod + " arg : " + this.arg;
   }
