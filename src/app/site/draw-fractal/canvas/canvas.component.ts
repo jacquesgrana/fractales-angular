@@ -107,12 +107,26 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   onMouseMove(event: MouseEvent) {
     //console.log('Mouse move : x :', event.clientX, ' y :', event.clientY);
-    if(this.canvasService.mouseDownPix !== null && this.canvasService.mouseUpPix !== null) {
+    if(this.canvasService.mouseDownPix !== null) {
+      let x: number
+    let y: number;
+
+    if(document.scrollingElement !== null) {
+      y = this.canvasService.canvasHeight - (event.clientY - this.canvas.nativeElement.offsetTop + document.scrollingElement?.scrollTop);
+      x = event.clientX - this.canvas.nativeElement.offsetLeft;
+    }
+    else {
+      y = this.canvasService.canvasHeight - (event.clientY - this.canvas.nativeElement.offsetTop);
+      x = event.clientX - this.canvas.nativeElement.offsetLeft;
+    }
       this.canvasService.isSelectionDraw = true;
+      this.canvasService.mouseOverPix = new Pixel(x, y);
+      this.canvasService.drawSelection();
     }
     else {
       this.canvasService.isSelectionDraw = false;
     }
+    //console.log('isSelectionDraw :', this.canvasService.isSelectionDraw);
   }
 
   /**

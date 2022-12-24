@@ -16,6 +16,8 @@ export class DrawFractalComponent implements OnInit {
 
   public canvasWidth!: number;
   public canvasHeight!: number;
+  public puceChar: string = "&#x2022;";
+  public spaceChar: string = "&nbsp;"
 
   @ViewChild('canvasStart', {static: false}) public canvasStart!: ElementRef;
   @ViewChild('canvasEnd', {static: false}) public canvasEnd!: ElementRef;

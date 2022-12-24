@@ -4,9 +4,9 @@
     <div>
       <p class="text-center text-infos text-color-white">
         Translation : x : <span class="text-color-accent">{{canvasService.trans.getX() | number:'1.0-6':'fr-FR'}}</span>
-          / y : <span class="text-color-accent">{{canvasService.trans.getY() | number:'1.0-6':'fr-FR'}}</span>
-          | rotation : <span class="text-color-accent">{{canvasService.angle | number:'1.0-6':'fr-FR'}}</span>
-         ° | zoom : <span class="text-color-accent">{{100/canvasService.zoom | number:'1.0-6':'fr-FR'}}</span>%
+        <span [innerHTML]="spaceChar"></span><span [innerHTML]="puceChar"></span><span [innerHTML]="spaceChar"></span> y : <span class="text-color-accent">{{canvasService.trans.getY() | number:'1.0-6':'fr-FR'}}</span>
+        <span [innerHTML]="spaceChar"></span><span [innerHTML]="puceChar"></span><span [innerHTML]="spaceChar"></span> rotation : <span class="text-color-accent">{{canvasService.angle | number:'1.0-6':'fr-FR'}}</span>
+         ° <span [innerHTML]="spaceChar"></span><span [innerHTML]="puceChar"></span><span [innerHTML]="spaceChar"></span> zoom : <span class="text-color-accent">{{100/canvasService.zoom | number:'1.0-6':'fr-FR'}}</span>%
       </p>
     </div>
     <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async"
@@ -32,8 +32,8 @@
       <div [hidden]="!canvasService.isHelpDisplayed" class="div-row-settings flex-center">
         <h3 class="text-color-accent div-row-title mt-5 me-1 ms-1 text-center">Aide</h3>
         <h4 class="text-color-white div-row-title mt-2 me-1 ms-1 text-center">Touches :</h4>
-        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[a]</span> : rotation + / <span class="text-color-accent">[z]</span> : rotation -</h4>
-        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[q]</span> : zoom - / <span class="text-color-accent">[s]</span> : zoom +</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[a]</span> : rotation + <span [innerHTML]="spaceChar"></span><span [innerHTML]="puceChar"></span><span [innerHTML]="spaceChar"></span> <span class="text-color-accent">[z]</span> : rotation -</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[q]</span> : zoom - <span [innerHTML]="spaceChar"></span><span [innerHTML]="puceChar"></span><span [innerHTML]="spaceChar"></span> <span class="text-color-accent">[s]</span> : zoom +</h4>
         <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[&#x21A0; &#x219E; &#x219F; &#x21A1;]</span> : translation &#x21A0; &#x219E; &#x219F; &#x21A1;</h4>
         <h4 class="text-color-white div-row-title mt-2 me-1 ms-1 text-center">Souris :</h4>
         <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[clic]</span> : centre l'image</h4>
@@ -48,7 +48,7 @@
 
         <h3 class="text-color-accent div-row-title mt-5">Réglages</h3>
           <h4 class="text-color-white div-row-title ">Seed : (<span class="text-color-accent">{{canvasService.real}}</span>) + i x
-            (<span class="text-color-accent">{{canvasService.imag}}</span>) / limite : <span class="text-color-accent">{{canvasService.limit}}</span> / nb iter. max : <span class="text-color-accent">{{canvasService.iterNb}}</span></h4>
+            (<span class="text-color-accent">{{canvasService.imag}}</span>) <span [innerHTML]="spaceChar"></span><span [innerHTML]="puceChar"></span><span [innerHTML]="spaceChar"></span> limite : <span class="text-color-accent">{{canvasService.limit}}</span> <span [innerHTML]="spaceChar"></span><span [innerHTML]="puceChar"></span><span [innerHTML]="spaceChar"></span> nb iter. max : <span class="text-color-accent">{{canvasService.iterNb}}</span></h4>
         <div class="div-row-2">
           <mat-form-field appearance="outline" color="accent" class="form-field">
             <mat-label class="label">Choisir une fractale</mat-label>

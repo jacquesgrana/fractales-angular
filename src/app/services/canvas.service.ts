@@ -58,6 +58,7 @@ export class CanvasService {
 
   public mouseDownPix: Pixel | null = null;
   public mouseUpPix: Pixel | null = null;
+  public mouseOverPix: Pixel | null = null;
 
   public calcFractalProgressObs$!: Subject<number>;
   public calcFractalProgress: number = 0;
@@ -170,17 +171,23 @@ export class CanvasService {
         tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
 
         let jobPercent = Math.round(100 * cpt / max);
-        /*
-                  if(jobPercent%20 === 0) {
-                    //console.log('% : ', jobPercent);
-                    //this.calcFractalProgressObs$.next(jobPercent);
-                    setTimeout( () => {
-                      this.calcFractalProgressObs$.next(jobPercent);
-                     }, 0 );
-                    //this.cd.detectChanges();
-                    //this.cd.markForCheck();
-                  }
-        */
+        if (jobPercent % 25 === 0) {
+          //requestAnimationFrame(() => {this.calcFractalProgressObs$.next(jobPercent);})
+/*
+          Promise.resolve(1).then(function resolve(this: any) {
+            this.calcFractalProgressObs$.next(jobPercent);
+          });
+          */
+          /*
+          setTimeout(() => {
+            this.calcFractalProgressObs$.next(jobPercent);
+          }, 1);*/
+          /*
+          const promise = new Promise<void>((resolve, reject) => {
+            resolve();
+          }).then(() => this.calcFractalProgressObs$.next(jobPercent));
+          */
+        }
         cpt++;
       }
     }
@@ -217,7 +224,7 @@ export class CanvasService {
   public centerOnPixel(center: Pixel): void {
     let centerOriginPix = new Pixel(Math.round(center.getI() - (this.canvasWidth / 2)), Math.round(center.getJ() - (this.canvasHeight / 2)));
     let centerOriginPt: Point = GraphicLibrary.calcPointFromPix(centerOriginPix, this.currentScene, this.canvasWidth, this.canvasHeight);
-    let originPix: Pixel = new Pixel(0,0);
+    let originPix: Pixel = new Pixel(0, 0);
     let originPt: Point = GraphicLibrary.calcPointFromPix(originPix, this.currentScene, this.canvasWidth, this.canvasHeight);
     let Tx: number = this.currentScene.getTrans().getX() + (centerOriginPt.getX() - originPt.getX());
     let Ty: number = this.currentScene.getTrans().getY() + (centerOriginPt.getY() - originPt.getY());
@@ -238,9 +245,9 @@ export class CanvasService {
     let endPt: Point = GraphicLibrary.calcPointFromPix(end, this.currentScene, this.canvasWidth, this.canvasHeight);
     let deltaX: number = endPt.getX() - startPt.getX();
     let deltaY: number = endPt.getY() - startPt.getY();
-    let newCenterPix: Pixel = new Pixel(Math.round((start.getI() + end.getI())/2), Math.round((start.getJ() + end.getJ())/2));
+    let newCenterPix: Pixel = new Pixel(Math.round((start.getI() + end.getI()) / 2), Math.round((start.getJ() + end.getJ()) / 2));
     let newCenterPt: Point = GraphicLibrary.calcPointFromPix(newCenterPix, this.currentScene, this.canvasWidth, this.canvasHeight);
-    let minPix: Pixel = new Pixel(0,0);
+    let minPix: Pixel = new Pixel(0, 0);
     let maxPix: Pixel = new Pixel(this.canvasWidth - 1, this.canvasHeight - 1);
     let minPt: Point = GraphicLibrary.calcPointFromPix(minPix, this.currentScene, this.canvasWidth, this.canvasHeight);
     let maxPt: Point = GraphicLibrary.calcPointFromPix(maxPix, this.currentScene, this.canvasWidth, this.canvasHeight);
@@ -256,7 +263,7 @@ export class CanvasService {
     else if (this.canvasWidth === this.canvasHeight) {
       zoom = Math.abs(deltaX / startDeltaX);
     }
-    let centerPix = new Pixel(Math.round(this.canvasWidth / 2) -1,Math.round(this.canvasHeight / 2) -1);
+    let centerPix = new Pixel(Math.round(this.canvasWidth / 2) - 1, Math.round(this.canvasHeight / 2) - 1);
     let centerPt: Point = GraphicLibrary.calcPointFromPix(centerPix, this.currentScene, this.canvasWidth, this.canvasHeight);
     let Tx = this.currentScene.getTrans().getX() + newCenterPt.getX() - centerPt.getX();
     let Ty = this.currentScene.getTrans().getY() + newCenterPt.getY() - centerPt.getY();
@@ -275,9 +282,24 @@ export class CanvasService {
     //this.currentScene.updateMatrix();
     if (this.isFractalDisplayed) {
       this.drawFractal();
+      if(this.isSelectionDraw) this.drawSelection();
     }
     else {
       this.drawBlank();
+    }
+  }
+
+  drawSelection() {
+
+    let startPt: Point;
+    if(this.mouseDownPix !== null && this.mouseOverPix !== null) {
+      console.log('appel draw selection');
+      let startPix = new Pixel(this.mouseDownPix.getI(), this.mouseDownPix.getJToDraw(this.canvasHeight));
+      startPt = GraphicLibrary.calcPointFromPix(startPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+      let endPix = new Pixel(this.mouseOverPix.getI(), this.mouseOverPix.getJToDraw(this.canvasHeight));
+      let endPt = GraphicLibrary.calcPointFromPix(endPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+      this.drawRect(startPt, endPt, true, 1, 'rgba(235, 125, 52, 0.10)', 'rgba(235, 125, 52, 0.10)', 0.62, this.context);
+      //this.updateDisplay();
     }
   }
 
@@ -315,8 +337,6 @@ export class CanvasService {
    * Méthode qui met à jour la fractale selon les valeurs choisies dans les réglages
    */
   uptadeFractal(): void {
-    //console.log("update fractale");
-
     this.fractal.getSeed().setReal(this.real);
     this.fractal.getSeed().setImag(this.imag);
     this.fractal.setLimit(this.limit);
@@ -449,9 +469,11 @@ export class CanvasService {
    * @param fillColor
    * @param context
    */
-  drawRect(startPt: Point, endPt: Point, isFilled: boolean, strokeWeight: number, strokeColor: string, fillColor: string, context: CanvasRenderingContext2D): void {
+  drawRect(startPt: Point, endPt: Point, isFilled: boolean, strokeWeight: number, strokeColor: string, fillColor: string, globalAlpha: number, context: CanvasRenderingContext2D): void {
     const startPix = GraphicLibrary.calcPixelFromPoint(startPt, this.currentScene, this.canvasWidth, this.canvasHeight);
     const endPix = GraphicLibrary.calcPixelFromPoint(endPt, this.currentScene, this.canvasWidth, this.canvasHeight);
+    context.save();
+    context.globalAlpha = globalAlpha;
     if (isFilled) {
       context.fillStyle = fillColor;
       context.fillRect(startPix.getI(), startPix.getJ(), endPix.getI() - startPix.getI(), endPix.getJ() - startPix.getJ());
@@ -459,5 +481,6 @@ export class CanvasService {
     context.lineWidth = strokeWeight;
     context.strokeStyle = strokeColor;
     context.strokeRect(startPix.getI(), startPix.getJ(), endPix.getI() - startPix.getI(), endPix.getJ() - startPix.getJ());
+    context.restore();
   }
 }
