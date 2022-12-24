@@ -111,7 +111,12 @@
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
   background-color: $components-background-color-bis;
   color: $components-foreground-color;
-  border-radius: $components-border-radius / 2;
+  border-radius: calc($components-border-radius / 2);
+}
+
+.icon-arrows {
+  display: inline-flex;
+  vertical-align: middle;
 }
 
 .text-infos {
@@ -145,12 +150,12 @@
 #canvasStart,
 #canvasEnd,
 #canvasResult {
-  border: ($components-border-thickness / 2) solid black;
+  border: calc($components-border-thickness / 2) solid black;
 }
 
 .mat-divider {
   border-top-color: $components-background-color;
-  border: ($components-border-thickness / 2) solid $components-background-color;
+  border: calc($components-border-thickness / 2) solid $components-background-color;
   margin-left: 1rem;
   margin-right: 1rem;
   margin-top: 2rem;
@@ -159,7 +164,7 @@
 }
 
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
-  border: ($components-border-thickness / 2) solid black;
+  border: calc($components-border-thickness / 2) solid black;
 }
 
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
