@@ -55,8 +55,8 @@ export class JuliaFractal {
    this.maxIt = maxIt;
   }
 
-    /*
- * Fontion qui renvoie une couleur en fonction du nombre complexe z après traitement selon les
+    /**
+    * Méthofr qui renvoie une couleur en fonction du nombre complexe z après traitement selon les
     * paramètres de la fractale
     *
     * @param Complex z : nombre complexe à traiter
@@ -93,7 +93,6 @@ export class JuliaFractal {
 
    clone(): JuliaFractal {
     return new JuliaFractal(this.getId(), this.getName(), this.getSeed().clone(), this.getLimit(), this.getMaxIt());
-    //return JSON.parse(JSON.stringify(this));
    }
 
   toString(): string {
