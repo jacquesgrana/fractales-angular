@@ -60,6 +60,9 @@ export class CanvasService {
   public mouseUpPix: Pixel | null = null;
   public mouseOverPix: Pixel | null = null;
 
+  public startPixTemp: Pixel | null = null;
+  public dataTemp: ImageData | null = null;
+
   public calcFractalProgressObs$!: Subject<number>;
   public calcFractalProgress: number = 0;
 
@@ -289,17 +292,32 @@ export class CanvasService {
     }
   }
 
+  /**
+   * Méthode qui affiche la zone de sélection.
+   * Pour éviter l'empilement, la méthode garde en réserve dans dataTemp la zone avant le dessin
+   * et, dès le second affichage du rectangle de sélection, affiche dataTemp pour revenir à l'etat initial
+   * avant d'afficher le nouveau rectangle de sélection
+   */
   drawSelection() {
-
-    let startPt: Point;
     if(this.mouseDownPix !== null && this.mouseOverPix !== null) {
       console.log('appel draw selection');
+      // si tempData !== null dessin de dataTemp avec les dimensions (startPixTemp et endPixTemp) putImageData(imageData, dx, dy)
+      if(this.dataTemp !== null && this.startPixTemp !== null) {
+        this.context.putImageData(this.dataTemp, this.startPixTemp.getI(), this.startPixTemp.getJ());
+      }
+      let startPt: Point;
       let startPix = new Pixel(this.mouseDownPix.getI(), this.mouseDownPix.getJToDraw(this.canvasHeight));
       startPt = GraphicLibrary.calcPointFromPix(startPix, this.currentScene, this.canvasWidth, this.canvasHeight);
       let endPix = new Pixel(this.mouseOverPix.getI(), this.mouseOverPix.getJToDraw(this.canvasHeight));
       let endPt = GraphicLibrary.calcPointFromPix(endPix, this.currentScene, this.canvasWidth, this.canvasHeight);
-      this.drawRect(startPt, endPt, true, 1, 'rgba(235, 125, 52, 0.10)', 'rgba(235, 125, 52, 0.10)', 0.62, this.context);
-      //this.updateDisplay();
+
+      // copie de l'ancien rectangle dans le tempData et des dimensions getImageData(sx, sy, sw, sh)
+      this.startPixTemp = new Pixel(Math.min(startPix.getI(), endPix.getI()), Math.min(startPix.getJ(), endPix.getJ()));
+      let deltaI = Math.abs(endPix.getI() - startPix.getI());
+      let deltaJ = Math.abs(endPix.getJ() - startPix.getJ());
+      this.dataTemp = this.context.getImageData(this.startPixTemp.getI(), this.startPixTemp.getJ(), deltaI, deltaJ);
+
+      this.drawRect(startPt, endPt, true, 1, 'rgba(235, 125, 52, 0.0)', 'rgba(235, 125, 52, 0.38)', 1.0, this.context);
     }
   }
 
@@ -467,6 +485,7 @@ export class CanvasService {
    * @param strokeWeight
    * @param strokeColor
    * @param fillColor
+   * @param globalAlpha
    * @param context
    */
   drawRect(startPt: Point, endPt: Point, isFilled: boolean, strokeWeight: number, strokeColor: string, fillColor: string, globalAlpha: number, context: CanvasRenderingContext2D): void {
