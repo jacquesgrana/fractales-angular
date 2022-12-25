@@ -24,4 +24,8 @@ export class HeaderComponent implements OnInit {
   goToDraw(){
     this.router.navigate(['draw']);
  }
+
+ goToRoot() {
+    window.location.href = '../index.html';
+ }
 }

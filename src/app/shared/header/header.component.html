@@ -7,6 +7,7 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item [disabled]="router.url == '/start'" (click)="goToStart()">Accueil</button>
       <button mat-menu-item [disabled]="router.url == '/draw'" (click)="goToDraw()">Dessiner</button>
+      <button mat-menu-item (click)="goToRoot()">Choisir une Application</button>
     </mat-menu>
 
     <mat-toolbar-row class="flex-center div-title">
