@@ -240,7 +240,6 @@ export class CanvasService {
 
   /**
    * Zoome et centre l'affichage sur la zone définie par start et end : calcule et met à jour le zoom et la translation de currentScene
-   * TODO corriger beug qd la rotation est non nulle
    * @param start Pixel de départ de la sélection
    * @param end Pixel de fin de la sélection
    */
@@ -294,20 +293,6 @@ export class CanvasService {
   }
 
   /**
-   * Méthode qui met à jour l'affichage du canvas
-   */
-  public updateDisplay(): void {
-    //this.currentScene.updateMatrix();
-    if (this.isFractalDisplayed) {
-      this.drawFractal();
-      if(this.isSelectionDraw) this.drawSelection();
-    }
-    else {
-      this.drawBlank();
-    }
-  }
-
-  /**
    * Méthode qui affiche la zone de sélection.
    * Pour éviter l'empilement, la méthode garde en réserve dans dataTemp la zone avant le dessin
    * et, dès le second affichage du rectangle de sélection, affiche dataTemp pour revenir à l'etat initial
@@ -320,11 +305,11 @@ export class CanvasService {
       if(this.dataTemp !== null && this.startPixTemp !== null) {
         this.context.putImageData(this.dataTemp, this.startPixTemp.getI(), this.startPixTemp.getJ());
       }
-      let startPt: Point;
+      //let startPt: Point;
       let startPix = new Pixel(this.mouseDownPix.getI(), this.mouseDownPix.getJToDraw(this.canvasHeight));
-      startPt = GraphicLibrary.calcPointFromPix(startPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+      // = GraphicLibrary.calcPointFromPix(startPix, this.currentScene, this.canvasWidth, this.canvasHeight);
       let endPix = new Pixel(this.mouseOverPix.getI(), this.mouseOverPix.getJToDraw(this.canvasHeight));
-      let endPt = GraphicLibrary.calcPointFromPix(endPix, this.currentScene, this.canvasWidth, this.canvasHeight);
+      //let endPt = GraphicLibrary.calcPointFromPix(endPix, this.currentScene, this.canvasWidth, this.canvasHeight);
 
       // copie de l'ancien rectangle dans le tempData et des dimensions getImageData(sx, sy, sw, sh)
       this.startPixTemp = new Pixel(Math.min(startPix.getI(), endPix.getI()), Math.min(startPix.getJ(), endPix.getJ()));
@@ -332,7 +317,21 @@ export class CanvasService {
       let deltaJ = Math.abs(endPix.getJ() - startPix.getJ());
       this.dataTemp = this.context.getImageData(this.startPixTemp.getI(), this.startPixTemp.getJ(), deltaI, deltaJ);
 
-      this.drawRect(startPt, endPt, true, 1, 'rgba(235, 125, 52, 0.0)', 'rgba(235, 125, 52, 0.38)', 1.0, this.context);
+      this.drawRect(startPix, endPix, true, 1, 'rgba(235, 125, 52, 0.0)', 'rgba(235, 125, 52, 0.38)', 1.0, this.context);
+    }
+  }
+
+  /**
+   * Méthode qui met à jour l'affichage du canvas
+   */
+  public updateDisplay(): void {
+    //this.currentScene.updateMatrix();
+    if (this.isFractalDisplayed) {
+      this.drawFractal();
+      if(this.isSelectionDraw) this.drawSelection();
+    }
+    else {
+      this.drawBlank();
     }
   }
 
@@ -492,10 +491,10 @@ export class CanvasService {
   }
 
   /**
-   * Méthode qui dessine un rectangle, dans les contexte context, ayant pour extrémités startPt et endPt, rempli ou non selon isFilled,
-   * de couleur de contour strokeColor et de couleur de remplissage fillColor
-   * @param startPt
-   * @param endPt
+   * Méthode qui dessine un rectangle, dans les contexte context, ayant pour extrémités startPix et endPix, rempli ou non selon isFilled,
+   * de couleur de contour strokeColor, de couleur de remplissage fillColor et de paramètre alpha global globalAlpha.
+   * @param startPix
+   * @param endPix
    * @param isFilled
    * @param strokeWeight
    * @param strokeColor
@@ -503,9 +502,7 @@ export class CanvasService {
    * @param globalAlpha
    * @param context
    */
-  drawRect(startPt: Point, endPt: Point, isFilled: boolean, strokeWeight: number, strokeColor: string, fillColor: string, globalAlpha: number, context: CanvasRenderingContext2D): void {
-    const startPix = GraphicLibrary.calcPixelFromPoint(startPt, this.currentScene, this.canvasWidth, this.canvasHeight);
-    const endPix = GraphicLibrary.calcPixelFromPoint(endPt, this.currentScene, this.canvasWidth, this.canvasHeight);
+  drawRect(startPix: Pixel, endPix: Pixel, isFilled: boolean, strokeWeight: number, strokeColor: string, fillColor: string, globalAlpha: number, context: CanvasRenderingContext2D): void {
     context.save();
     context.globalAlpha = globalAlpha;
     if (isFilled) {

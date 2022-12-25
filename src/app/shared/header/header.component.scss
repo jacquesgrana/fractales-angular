@@ -5,24 +5,30 @@ mat-toolbar {
   margin: 0;
 }
 
-h1 {
+.title {
+
   text-align: center;
   font-size: 2.6rem !important;
+  white-space: normal;
+  line-height: 3rem !important;
 }
 
 .body-container {
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
   background-color: $components-background-color;
   min-width: 100%;
-  height: 12vh;
+  height: auto;
   color: $components-background-color-accent;
   padding-bottom: 0.5rem;
   border-bottom: $components-border-thickness solid black;
 }
 
 .div-title {
-  margin-top: 0rem;
+  padding: 3rem;
+  max-width: inherit;
+  margin-bottom: 1rem;
 }
 
 .menu-icon {
