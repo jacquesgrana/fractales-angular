@@ -1,16 +1,21 @@
 <div class="body-container">
   <section class="block-container" id="block-container">
     <app-canvas></app-canvas>
+    <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async" class="progress-bar mb-4"></mat-progress-bar>
     <div>
       <p class="text-center text-infos text-color-white">
         Translation : x : <span class="text-color-accent">{{canvasService.trans.getX() | number:'1.0-6':'fr-FR'}}</span>
         <span [innerHTML]="spaceChar"></span><span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> y : <span class="text-color-accent">{{canvasService.trans.getY() | number:'1.0-6':'fr-FR'}}</span>
-        <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> rotation : <span class="text-color-accent">{{canvasService.angle | number:'1.0-6':'fr-FR'}}</span>
-         ° <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> zoom : <span class="text-color-accent">{{100/canvasService.zoom | number:'1.0-6':'fr-FR'}}</span>%
+      </p>
+      <p class="text-center text-infos text-color-white">
+        Rotation : <span class="text-color-accent">{{-1 * canvasService.angle | number:'1.0-6':'fr-FR'}}</span>
+        ° <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> Zoom : <span class="text-color-accent">{{100/canvasService.zoom | number:'1.0-6':'fr-FR'}}</span>%
+      </p>
+      <p class="text-center text-infos text-color-white">
+        Nom de la fractale : <span class="text-color-accent">{{canvasService.fractal.getName()}}</span>
       </p>
     </div>
-    <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async"
-      class="progress-bar"></mat-progress-bar>
+
     <!-- (canvasService.calcFractalProgressObs$ | async) || 0 / canvasService.calcFractalProgress -->
     <section class="block">
       <div class="div-row">

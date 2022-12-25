@@ -7,6 +7,7 @@ import { Pixel } from '../classes/pixel';
 import { Point } from '../classes/point';
 import { Scene } from '../classes/scene';
 import { GraphicLibrary } from '../libraries/graphic-library';
+import { MathLibrary } from '../libraries/math-library';
 
 
 /**
@@ -239,7 +240,7 @@ export class CanvasService {
 
   /**
    * Zoome et centre l'affichage sur la zone définie par start et end : calcule et met à jour le zoom et la translation de currentScene
-   *
+   * TODO corriger beug qd la rotation est non nulle
    * @param start Pixel de départ de la sélection
    * @param end Pixel de fin de la sélection
    */
@@ -256,12 +257,26 @@ export class CanvasService {
     let maxPt: Point = GraphicLibrary.calcPointFromPix(maxPix, this.currentScene, this.canvasWidth, this.canvasHeight);
     let startDeltaX: number = maxPt.getX() - minPt.getX();
     let startDeltaY: number = maxPt.getY() - minPt.getY();
+
+    let cos: number = Math.cos(MathLibrary.degreeToRad(this.currentScene.getAngle()));
+    let sin: number = Math.sin(MathLibrary.degreeToRad(this.currentScene.getAngle()));
+
+    let tempStartDeltaX: number = startDeltaX * cos + startDeltaY * sin;
+    let tempStartDeltaY: number = -1 * startDeltaX * sin + startDeltaY * cos;
+    startDeltaX = tempStartDeltaX;
+    startDeltaY = tempStartDeltaY;
+
+    let tempDeltaX: number = deltaX * cos + deltaY * sin;
+    let tempDeltaY: number = -1 * deltaX * sin + deltaY * cos;
+    deltaX = tempDeltaX;
+    deltaY = tempDeltaY;
+
     let zoom: number = 1;
     if (this.canvasWidth > this.canvasHeight) {
-      zoom = Math.abs(deltaX / startDeltaX);
+      zoom = Math.abs(deltaY / startDeltaY);
     }
     else if (this.canvasWidth < this.canvasHeight) {
-      zoom = Math.abs(deltaY / startDeltaY);
+      zoom = Math.abs(deltaX / startDeltaX);
     }
     else if (this.canvasWidth === this.canvasHeight) {
       zoom = Math.abs(deltaX / startDeltaX);

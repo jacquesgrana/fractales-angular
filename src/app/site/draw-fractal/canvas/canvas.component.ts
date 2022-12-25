@@ -127,6 +127,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.canvasService.isSelectionDraw = false;
       this.canvasService.dataTemp = null; // ****************************************************
       this.canvasService.startPixTemp = null;
+      this.canvasService.mouseUpPix = null;
     }
     //console.log('isSelectionDraw :', this.canvasService.isSelectionDraw);
   }
