@@ -40,6 +40,10 @@
   border: $components-border-thickness solid $components-foreground-color-accent;
 }
 
+.button-selected {
+  background-color: $components-background-color-bis !important;
+}
+
 .div-row {
   display: flex;
   justify-content: start;

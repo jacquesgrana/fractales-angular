@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Dessin de Fractales de Julia';
+  title = 'Fractales de Julia';
 }

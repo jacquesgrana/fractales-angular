@@ -68,8 +68,13 @@ export class DrawFractalComponent implements OnInit {
    */
   toggleSettingsDisplay(): void {
     this.canvasService.isSettingsDisplayed = !this.canvasService.isSettingsDisplayed;
+    const button = document.getElementById('button-settings');
     if(this.canvasService.isSettingsDisplayed) {
       this.updateGradients();
+      button?.classList.add('button-selected');
+    }
+    else {
+      button?.classList.remove('button-selected');
     }
   }
 

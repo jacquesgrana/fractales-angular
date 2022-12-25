@@ -30,3 +30,7 @@
   border: $components-border-thickness solid black;
   border-radius: $components-border-radius;
 }
+
+.button-gen:hover {
+  border: $components-border-thickness solid $components-foreground-color-accent;
+}
