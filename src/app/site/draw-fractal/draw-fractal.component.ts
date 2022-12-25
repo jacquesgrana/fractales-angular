@@ -3,7 +3,9 @@ import { GraphicLibrary } from 'src/app/libraries/graphic-library';
 import { CanvasService } from 'src/app/services/canvas.service';
 import localeFr from '@angular/common/locales/fr';
 import localeFrExtra from '@angular/common/locales/extra/fr';
-import { registerLocaleData, DecimalPipe, CurrencyPipe} from '@angular/common';
+import { registerLocaleData } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { HelpDialogComponent } from './help-dialog/help-dialog.component';
 registerLocaleData(localeFr, 'fr-FR', localeFrExtra);
 
 @Component({
@@ -17,18 +19,30 @@ export class DrawFractalComponent implements OnInit {
   public canvasWidth!: number;
   public canvasHeight!: number;
   public puceChar: string = "&#x2022;";
-  public spaceChar: string = "&nbsp;"
+  public spaceChar: string = "&nbsp;";
 
   @ViewChild('canvasStart', {static: false}) public canvasStart!: ElementRef;
   @ViewChild('canvasEnd', {static: false}) public canvasEnd!: ElementRef;
   @ViewChild('canvasResult', {static: false}) public canvasResult!: ElementRef;
 
 
-  constructor(public canvasService: CanvasService, private cd: ChangeDetectorRef
+  constructor(
+    public canvasService: CanvasService,
+    //private cd: ChangeDetectorRef,
+    public dialog: MatDialog
     ) {}
 
   ngOnInit(): void {
-    this.canvasService.cd = this.cd;
+    //this.canvasService.cd = this.cd;
+  }
+
+  /**
+   * ouvre la modale d'aide
+   */
+  openHelpDialog(): void {
+    const dialogRef = this.dialog.open(HelpDialogComponent, {});
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   /**
@@ -76,13 +90,6 @@ export class DrawFractalComponent implements OnInit {
     else {
       button?.classList.remove('button-selected');
     }
-  }
-
-  /**
-   * Affiche/masque l'aide
-   */
-  toggleHelpDisplay(): void {
-    this.canvasService.isHelpDisplayed = !this.canvasService.isHelpDisplayed;
   }
 
   /**

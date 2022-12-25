@@ -29,30 +29,13 @@
           (click)="toggleSettingsDisplay()">{{canvasService.isSettingsDisplayed ? "Masquer les réglages" : "Afficher les réglages"}}&#160;<mat-icon class="text-color-accent">{{canvasService.isSettingsDisplayed ? "visibility_off" :
             "visibility_on"}}</mat-icon></button>
             <button mat-flat-button color="primary" class="button-gen"
-          (click)="toggleHelpDisplay()">{{canvasService.isHelpDisplayed ? "Masquer l'aide" : "Afficher l'aide"}}&#160;<mat-icon class="text-color-accent">{{canvasService.isHelpDisplayed ? "visibility_off" :
-            "visibility_on"}}</mat-icon></button>
+          (click)="openHelpDialog()">Afficher l'aide&#160;<mat-icon class="text-color-accent">visibility_on</mat-icon></button>
             <button mat-flat-button color="primary" class="button-gen"
           (click)="resetSceneValues()">Réinitialiser<mat-icon class="text-color-accent">restore</mat-icon></button>
       </div>
-      <div [hidden]="!canvasService.isHelpDisplayed" class="div-row-settings flex-center">
-        <h3 class="text-color-accent div-row-title mt-5 me-1 ms-1 text-center">Aide</h3>
-        <h4 class="text-color-white div-row-title mt-2 me-1 ms-1 text-center">Touches :</h4>
-        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[a]</span> : <mat-icon class="icon-arrows">rotate_left</mat-icon> <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> <span class="text-color-accent">[z]</span> : <mat-icon class="icon-arrows">rotate_right</mat-icon>
-          <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span><span class="text-color-accent">[q]</span> : <mat-icon class="icon-arrows">zoom_out</mat-icon> <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> <span class="text-color-accent">[s]</span> : <mat-icon class="icon-arrows">zoom_in</mat-icon></h4>
-        <h4 class="text-color-white div-row-title me-1 ms-1 text-center">
-          <span class="text-color-accent"><mat-icon class="icon-arrows">arrow_forward</mat-icon><mat-icon class="icon-arrows">arrow_back</mat-icon><mat-icon class="icon-arrows">arrow_upward</mat-icon><mat-icon class="icon-arrows">arrow_downward</mat-icon>
-          </span> : translation <mat-icon class="icon-arrows">arrow_forward</mat-icon><mat-icon class="icon-arrows">arrow_back</mat-icon><mat-icon class="icon-arrows">arrow_upward</mat-icon><mat-icon class="icon-arrows">arrow_downward</mat-icon></h4>
-        <h4 class="text-color-white div-row-title mt-2 me-1 ms-1 text-center">Souris :</h4>
-        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent"><mat-icon class="icon-arrows">ads_click</mat-icon></span> : centre l'image</h4>
-        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent"><mat-icon class="icon-arrows">highlight_alt</mat-icon></span> : zoom dans l'image</h4>
-        <h4 class="text-color-white div-row-title mt-2 me-1 ms-1 text-center">Réglages :</h4>
-        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[seed]</span> : nombre complexe de 'départ' défini par sa partie réelle et imaginaire</h4>
-        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[limit]</span> : 'seuil' du dessin qui détermine si le pixel est dessiné</h4>
-        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[iter max number]</span> : nombre maximum de pas de la boucle de calcul par pixel</h4>
-        <mat-divider *ngIf="canvasService.isSettingsDisplayed"></mat-divider>
-      </div>
-      <div [hidden]="!canvasService.isSettingsDisplayed" class="div-row-settings flex-center">
 
+      <div [hidden]="!canvasService.isSettingsDisplayed" class="div-row-settings flex-center">
+        <mat-divider></mat-divider>
         <h3 class="text-color-accent div-row-title mt-5">Réglages</h3>
           <h4 class="text-color-white div-row-title ">Seed : (<span class="text-color-accent">{{canvasService.real}}</span>) + i x
             (<span class="text-color-accent">{{canvasService.imag}}</span>) <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> limite : <span class="text-color-accent">{{canvasService.limit}}</span> <span [innerHTML]="spaceChar"></span><span [innerHTML]="puceChar"></span><span [innerHTML]="spaceChar"></span> nb iter. max : <span class="text-color-accent">{{canvasService.iterNb}}</span></h4>

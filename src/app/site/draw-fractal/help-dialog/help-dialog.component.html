@@ -1,0 +1,21 @@
+<h1 mat-dialog-title class="text-center text-color-accent mt-1">Aide</h1>
+<div mat-dialog-content>
+        <h4 class="text-color-white div-row-title mt-4 me-1 ms-1 text-center">Touches :</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[a]</span> : <mat-icon class="icon-arrows">rotate_left</mat-icon> <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> <span class="text-color-accent">[z]</span> : <mat-icon class="icon-arrows">rotate_right</mat-icon>
+          <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span><span class="text-color-accent">[q]</span> : <mat-icon class="icon-arrows">zoom_out</mat-icon> <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> <span class="text-color-accent">[s]</span> : <mat-icon class="icon-arrows">zoom_in</mat-icon></h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center">
+          <span class="text-color-accent"><mat-icon class="icon-arrows">arrow_forward</mat-icon><mat-icon class="icon-arrows">arrow_back</mat-icon><mat-icon class="icon-arrows">arrow_upward</mat-icon><mat-icon class="icon-arrows">arrow_downward</mat-icon>
+          </span> : translation <mat-icon class="icon-arrows">arrow_forward</mat-icon><mat-icon class="icon-arrows">arrow_back</mat-icon><mat-icon class="icon-arrows">arrow_upward</mat-icon><mat-icon class="icon-arrows">arrow_downward</mat-icon></h4>
+        <mat-divider></mat-divider>
+        <h4 class="text-color-white div-row-title mt-4 me-1 ms-1 text-center">Souris :</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent"><mat-icon class="icon-arrows">ads_click</mat-icon></span> : centre l'image</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent"><mat-icon class="icon-arrows">highlight_alt</mat-icon></span> : zoom dans l'image</h4>
+        <mat-divider></mat-divider>
+        <h4 class="text-color-white div-row-title mt-4 me-1 ms-1 text-center">Réglages :</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[seed]</span> : nombre complexe de 'départ' défini par sa partie réelle et imaginaire</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[limit]</span> : 'seuil' du dessin qui détermine si le pixel est dessiné</h4>
+        <h4 class="text-color-white div-row-title me-1 ms-1 text-center"><span class="text-color-accent">[iter max number]</span> : nombre maximum de pas de la boucle de calcul par pixel</h4>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button color="primary" (click)="onNoClick()" class="button-gen text-color-white">Fermer<mat-icon class="text-color-accent">close</mat-icon></button>
+</div>

@@ -10,12 +10,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HelpDialogComponent } from './help-dialog/help-dialog.component';
 
 
 @NgModule({
   declarations: [
     DrawFractalComponent,
-    CanvasComponent
+    CanvasComponent,
+    HelpDialogComponent
   ],
   imports: [
     CommonModule,

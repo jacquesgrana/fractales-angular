@@ -53,7 +53,6 @@ export class CanvasService {
   public isFractalDisplayed: boolean = true;
   public isAxesDisplayed: boolean = true;
   public isSettingsDisplayed: boolean = false;
-  public isHelpDisplayed: boolean = false;
   public isSelectionDraw: boolean = false;
   //public isMouseIn: boolean = false; // TODO passer en Subject<boolean> ?
 
