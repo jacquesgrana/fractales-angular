@@ -11,12 +11,12 @@
 }
 
 .block-container {
-  max-width: 600px;
+  max-width: 800px;
   margin: auto;
   margin-top: 2rem;
   margin-bottom: 2rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
   background-color: $components-background-color-bis;
@@ -52,8 +52,7 @@
 }
 
 .mat-divider {
-  border-top-color: $components-background-color;
-  border: calc($components-border-thickness / 2) solid $components-background-color;
+  border: calc($components-border-thickness / 2) solid $components-background-color-ter;
   margin-top: 1rem;
   margin-bottom: 1rem;
   margin-right: auto;
