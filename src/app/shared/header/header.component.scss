@@ -39,6 +39,10 @@ mat-toolbar {
   color: $components-background-color-accent !important;
 }
 
+.icon-button-selected {
+  color: $components-background-color-bis !important;
+}
+
 ::ng-deep.mat-menu {
   background-color: $components-background-color !important;
   border: calc($components-border-thickness / 2) solid black;
