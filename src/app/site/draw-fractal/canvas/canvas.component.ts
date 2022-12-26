@@ -36,10 +36,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   capPixValues(pixel: Pixel): Pixel {
-    if(pixel.getI() < 0) {pixel.setI(0)}
-    else if(pixel.getI() > (this.canvasService.canvasWidth - 1)) {pixel.setI(this.canvasService.canvasWidth - 1)};
-    if(pixel.getJ() < 0) {pixel.setJ(0)}
-    else if(pixel.getJ() > (this.canvasService.canvasHeight - 1)) {pixel.setJ(this.canvasService.canvasHeight - 1)};
+    if (pixel.getI() < 0) { pixel.setI(0) }
+    else if (pixel.getI() > (this.canvasService.canvasWidth - 1)) { pixel.setI(this.canvasService.canvasWidth - 1) };
+    if (pixel.getJ() < 0) { pixel.setJ(0) }
+    else if (pixel.getJ() > (this.canvasService.canvasHeight - 1)) { pixel.setJ(this.canvasService.canvasHeight - 1) };
     return pixel;
   }
 
@@ -47,7 +47,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     let x: number
     let y: number;
 
-    if(document.scrollingElement !== null) {
+    if (document.scrollingElement !== null) {
       y = this.canvasService.canvasHeight - (event.clientY - this.canvas.nativeElement.offsetTop + document.scrollingElement?.scrollTop);
       x = event.clientX - this.canvas.nativeElement.offsetLeft;
     }
@@ -55,7 +55,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       y = this.canvasService.canvasHeight - (event.clientY - this.canvas.nativeElement.offsetTop);
       x = event.clientX - this.canvas.nativeElement.offsetLeft;
     }
-    this.canvasService.mouseDownPix = new Pixel(x,y);
+    this.canvasService.mouseDownPix = new Pixel(x, y);
     this.canvasService.mouseDownPix = this.capPixValues(this.canvasService.mouseDownPix);
 
     // booleen dessin a vrai
@@ -68,11 +68,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
 
   onMouseUp(event: MouseEvent) {
-//console.log('scrolling element top', document.scrollingElement?.scrollTop);
+    //console.log('scrolling element top', document.scrollingElement?.scrollTop);
     let x: number
     let y: number;
 
-    if(document.scrollingElement !== null) {
+    if (document.scrollingElement !== null) {
       y = this.canvasService.canvasHeight - (event.clientY - this.canvas.nativeElement.offsetTop + document.scrollingElement?.scrollTop);
       x = event.clientX - this.canvas.nativeElement.offsetLeft;
     }
@@ -81,53 +81,74 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       x = event.clientX - this.canvas.nativeElement.offsetLeft;
     }
     //console.log('Mouse up : x :', x, ' y :', y);
-    this.canvasService.mouseUpPix = new Pixel(x,y);
+    this.canvasService.mouseUpPix = new Pixel(x, y);
     this.canvasService.mouseUpPix = this.capPixValues(this.canvasService.mouseUpPix);
-    if(this.canvasService.mouseDownPix !== null) this.canvasService.mouseUpPix = !this.canvasService.mouseUpPix.equals(this.canvasService.mouseDownPix) ? this.canvasService.mouseUpPix : null;
+    if (this.canvasService.mouseDownPix !== null) this.canvasService.mouseUpPix = !this.canvasService.mouseUpPix.equals(this.canvasService.mouseDownPix) ? this.canvasService.mouseUpPix : null;
     //console.log(' mouse up pix :', this.canvasService.mouseUpPix?.toString());
 
 
-    if(this.canvasService.mouseUpPix !== undefined && this.canvasService.mouseUpPix !== null
+    if (this.canvasService.mouseUpPix !== undefined && this.canvasService.mouseUpPix !== null
       && this.canvasService.mouseDownPix !== undefined && this.canvasService.mouseDownPix !== null
       && this.canvasService.mouseDownPix.calcDist(this.canvasService.mouseUpPix) > 10) {
-        this.canvasService.zoomIn(this.canvasService.mouseUpPix, this.canvasService.mouseDownPix);
+      this.canvasService.zoomIn(this.canvasService.mouseUpPix, this.canvasService.mouseDownPix);
+      this.canvasService.mouseDownPix = null;
+      this.canvasService.mouseUpPix = null;
+
+      // boolean dessin selection a faux
+    }
+    else {
+      if (this.canvasService.mouseDownPix !== null) {
+        this.canvasService.centerOnPixel(this.canvasService.mouseDownPix);
         this.canvasService.mouseDownPix = null;
         this.canvasService.mouseUpPix = null;
+      }
+    }
+  }
 
-        // boolean dessin selection a faux
-      }
-      else {
-        if(this.canvasService.mouseDownPix !== null) {
-          this.canvasService.centerOnPixel(this.canvasService.mouseDownPix);
-          this.canvasService.mouseDownPix = null;
-          this.canvasService.mouseUpPix = null;
-        }
-      }
+  ouMouseOut(event: MouseEvent) {
+    this.canvasService.isSelectionDraw = false;
+      this.canvasService.dataTemp = null;
+      this.canvasService.startPixTemp = null;
+      this.canvasService.mouseDownPix = null;
+      this.canvasService.mouseUpPix = null;
   }
 
   onMouseMove(event: MouseEvent) {
     //console.log('Mouse move : x :', event.clientX, ' y :', event.clientY);
-    if(this.canvasService.mouseDownPix !== null) {
-      let x: number
-    let y: number;
+    if (this.canvasService.mouseDownPix !== null) {
+      let x: number;
+      let y: number;
 
-    if(document.scrollingElement !== null) {
-      y = this.canvasService.canvasHeight - (event.clientY - this.canvas.nativeElement.offsetTop + document.scrollingElement?.scrollTop);
-      x = event.clientX - this.canvas.nativeElement.offsetLeft;
-    }
-    else {
-      y = this.canvasService.canvasHeight - (event.clientY - this.canvas.nativeElement.offsetTop);
-      x = event.clientX - this.canvas.nativeElement.offsetLeft;
-    }
-      this.canvasService.isSelectionDraw = true;
-      this.canvasService.mouseOverPix = new Pixel(x, y);
-      this.canvasService.drawSelection();
+      if (document.scrollingElement !== null) {
+        y = this.canvasService.canvasHeight - (event.clientY - this.canvas.nativeElement.offsetTop + document.scrollingElement.scrollTop);
+        x = event.clientX - this.canvas.nativeElement.offsetLeft;
+      }
+      else {
+        y = this.canvasService.canvasHeight - (event.clientY - this.canvas.nativeElement.offsetTop);
+        x = event.clientX - this.canvas.nativeElement.offsetLeft;
+      }
+
+
+      if(x<0 || x>this.canvasService.canvasWidth-1 || y<0 || y>this.canvasService.canvasHeight-1) {
+        console.log('souris out');
+        this.canvasService.deleteSelection();
+        this.canvasService.isSelectionDraw = false;
+        this.canvasService.dataTemp = null;
+        this.canvasService.startPixTemp = null;
+        this.canvasService.mouseDownPix = null;
+        this.canvasService.mouseUpPix = null;
+      }
+      else {
+        this.canvasService.isSelectionDraw = true;
+        this.canvasService.mouseOverPix = new Pixel(x, y);
+        this.canvasService.drawSelection();
+      }
     }
     else {
       this.canvasService.isSelectionDraw = false;
-      this.canvasService.dataTemp = null; // ****************************************************
+      this.canvasService.dataTemp = null;
       this.canvasService.startPixTemp = null;
-      this.canvasService.mouseUpPix = null;
+      
     }
     //console.log('isSelectionDraw :', this.canvasService.isSelectionDraw);
   }

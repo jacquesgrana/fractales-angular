@@ -51,10 +51,23 @@
   font-size: 1.6rem;
 }
 
+.title-little {
+  margin-top: 2rem;
+}
+
 .mat-divider {
   border: calc($components-border-thickness / 2) solid $components-background-color-ter;
   margin-top: 1rem;
   margin-bottom: 1rem;
   margin-right: auto;
   margin-left: auto;
+}
+
+.text-link {
+  color: $components-background-color-accent;
+  text-decoration: none;
+}
+
+.text-link:hover {
+  color: $components-foreground-color-accent;
 }

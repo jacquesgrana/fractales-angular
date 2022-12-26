@@ -10,6 +10,10 @@ import { GraphicLibrary } from '../libraries/graphic-library';
 import { MathLibrary } from '../libraries/math-library';
 
 
+const COLOR_FILL_SELECT: string = 'rgba(235, 125, 52, 0.38)';
+const COLOR_STROKE_SELECT: string = 'rgba(235, 125, 52, 0.0)';
+const COLOR_BACKGROUND: string = 'rgba(20,20,20,1.0)';
+
 /**
  * Classe du service qui gère le canvas
  */
@@ -29,7 +33,7 @@ export class CanvasService {
 
   public context!: CanvasRenderingContext2D;
 
-  public backgroundColor: string = 'rgba(20,20,20,1.0)';
+  //public backgroundColor: string = 'rgba(20,20,20,1.0)';
   public axesColor: string = 'rgba(255,255,255,0.38)';
   public originColor: string = 'rgba(255,255,255,0.62)';
 
@@ -79,7 +83,6 @@ export class CanvasService {
     this.calcFractalProgressObs$ = new Subject<number>();
     this.calcFractalProgressObs$.subscribe(v => {
       this.calcFractalProgress = v;
-      //this.cd.detectChanges();
     });
     this.calcFractalProgressObs$.next(0);
 
@@ -139,7 +142,7 @@ export class CanvasService {
     for (let i = 0; i < this.canvasWidth; i++) {
       this.tabToDraw[i] = new Array(this.canvasHeight);
       for (let j = 0; j < this.canvasHeight; j++) {
-        this.tabToDraw[i][j] = Color.createFromRgba(this.backgroundColor);
+        this.tabToDraw[i][j] = Color.createFromRgba(COLOR_BACKGROUND);
       }
     }
   }
@@ -170,7 +173,7 @@ export class CanvasService {
         pix.setJ(j);
         let pointM = GraphicLibrary.calcPointFromPix(pix, this.currentScene, this.canvasWidth, this.canvasHeight);
         let z = new ComplexNb(true, pointM.getX(), pointM.getY());
-        let colorPt = this.fractal.calcColorFromJuliaFractal(z, this.gradientStart, this.gradientEnd - this.gradientStart, this.backgroundColor);
+        let colorPt = this.fractal.calcColorFromJuliaFractal(z, this.gradientStart, this.gradientEnd - this.gradientStart, COLOR_BACKGROUND);
         tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
 
         let jobPercent = Math.round(100 * cpt / max);
@@ -297,26 +300,48 @@ export class CanvasService {
    * et, dès le second affichage du rectangle de sélection, affiche dataTemp pour revenir à l'etat initial
    * avant d'afficher le nouveau rectangle de sélection
    */
-  drawSelection() {
+  drawSelection(): void {
     if(this.mouseDownPix !== null && this.mouseOverPix !== null) {
-      console.log('appel draw selection');
+      //console.log('appel draw selection');
       // si tempData !== null dessin de dataTemp avec les dimensions (startPixTemp et endPixTemp) putImageData(imageData, dx, dy)
-      if(this.dataTemp !== null && this.startPixTemp !== null) {
-        this.context.putImageData(this.dataTemp, this.startPixTemp.getI(), this.startPixTemp.getJ());
-      }
+
       //let startPt: Point;
       let startPix = new Pixel(this.mouseDownPix.getI(), this.mouseDownPix.getJToDraw(this.canvasHeight));
       // = GraphicLibrary.calcPointFromPix(startPix, this.currentScene, this.canvasWidth, this.canvasHeight);
       let endPix = new Pixel(this.mouseOverPix.getI(), this.mouseOverPix.getJToDraw(this.canvasHeight));
       //let endPt = GraphicLibrary.calcPointFromPix(endPix, this.currentScene, this.canvasWidth, this.canvasHeight);
 
+      const minPix = new Pixel(Math.min(startPix.getI(), endPix.getI()), Math.min(startPix.getJ(), endPix.getJ()));
+
+      this.deleteSelection();
+
+
+
       // copie de l'ancien rectangle dans le tempData et des dimensions getImageData(sx, sy, sw, sh)
-      this.startPixTemp = new Pixel(Math.min(startPix.getI(), endPix.getI()), Math.min(startPix.getJ(), endPix.getJ()));
+      this.startPixTemp = minPix;
       let deltaI = Math.abs(endPix.getI() - startPix.getI());
       let deltaJ = Math.abs(endPix.getJ() - startPix.getJ());
-      this.dataTemp = this.context.getImageData(this.startPixTemp.getI(), this.startPixTemp.getJ(), deltaI, deltaJ);
+      if(deltaI > 0 && deltaJ > 0
+        && this.startPixTemp.getI() + deltaI < this.canvasWidth
+        && this.startPixTemp.getJ() + deltaJ < this.canvasHeight) {
+        this.dataTemp = this.context.getImageData(this.startPixTemp.getI(), this.startPixTemp.getJ(), deltaI, deltaJ);
+      }
+      else {
+        this.dataTemp = null;
+      }
 
-      this.drawRect(startPix, endPix, true, 1, 'rgba(235, 125, 52, 0.0)', 'rgba(235, 125, 52, 0.38)', 1.0, this.context);
+      this.drawRect(startPix, endPix, true, 1, COLOR_STROKE_SELECT, COLOR_FILL_SELECT, 1.0, this.context);
+    }
+  }
+
+  deleteSelection(): void {
+    if(this.dataTemp !== null && this.startPixTemp !== null
+      && this.startPixTemp.getI() >= 0 && this.startPixTemp.getI() + this.dataTemp.width < this.canvasWidth
+      && this.startPixTemp.getJ() >= 0 && this.startPixTemp.getJ() + this.dataTemp.height < this.canvasHeight
+      ) {
+      this.context.putImageData(this.dataTemp, this.startPixTemp.getI(), this.startPixTemp.getJ());
+      this.dataTemp = null;
+      this.startPixTemp = null;
     }
   }
 
@@ -327,7 +352,7 @@ export class CanvasService {
     //this.currentScene.updateMatrix();
     if (this.isFractalDisplayed) {
       this.drawFractal();
-      if(this.isSelectionDraw) this.drawSelection();
+      //if(this.isSelectionDraw) this.drawSelection();
     }
     else {
       this.drawBlank();
