@@ -6,7 +6,6 @@ mat-toolbar {
 }
 
 .title {
-
   text-align: center;
   font-size: 2.6rem !important;
   white-space: normal;
@@ -34,4 +33,29 @@ mat-toolbar {
 .menu-icon {
   margin-top: 1rem;
   transform: scale(2);
+}
+
+.icon-button {
+  color: $components-background-color-accent !important;
+}
+
+::ng-deep.mat-menu {
+  background-color: $components-background-color !important;
+  border: calc($components-border-thickness / 2) solid black;
+  border-radius: calc($components-border-radius / 2);
+}
+
+.button-menu {
+  background-color: $components-background-color !important;
+  color: white !important;
+}
+
+.button-menu:hover {
+  background-color: $components-background-color-bis !important;
+  color: $components-background-color-accent !important;
+}
+
+.button-selected {
+  background-color: $components-background-color-ter !important;
+  color: $components-background-color-bis !important;
 }

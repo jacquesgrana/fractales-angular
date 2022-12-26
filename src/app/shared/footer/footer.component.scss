@@ -28,3 +28,11 @@
 .text-link {
   text-decoration: none;
 }
+
+.text-link:hover {
+  color: $components-foreground-color-accent;
+}
+
+.text-footer {
+  word-break: keep-all;
+}

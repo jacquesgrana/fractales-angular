@@ -4,10 +4,10 @@
       <mat-icon class="menu-icon">menu</mat-icon>
     </button>
   </mat-toolbar-row>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item [disabled]="router.url == '/start'" (click)="goToStart()">Accueil</button>
-      <button mat-menu-item [disabled]="router.url == '/draw'" (click)="goToDraw()">Dessiner</button>
-      <button mat-menu-item (click)="goToRoot()">Choisir une Application</button>
+    <mat-menu #menu="matMenu" class="mat-menu">
+      <button mat-menu-item class="button-menu {{router.url == '/start' ? 'button-selected' : ''}}" id="start-button" [disabled]="router.url == '/start'" (click)="goToStart()"><mat-icon class="icon-button">home</mat-icon>Accueil</button>
+      <button mat-menu-item class="button-menu {{router.url == '/draw' ? 'button-selected' : ''}}" id="draw-button" [disabled]="router.url == '/draw'" (click)="goToDraw()"><mat-icon class="icon-button">draw</mat-icon>Dessiner</button>
+      <button mat-menu-item class="button-menu" (click)="goToRoot()"><mat-icon class="icon-button">menu</mat-icon>Choisir une Application</button>
     </mat-menu>
 
     <mat-toolbar-row class="flex-center div-title">
