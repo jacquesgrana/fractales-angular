@@ -159,7 +159,7 @@ export class DrawFractalComponent implements OnInit {
 
       case 'ArrowLeft':
         //console.log('touche gauche');
-        Tx = this.canvasService.currentScene.getTrans().getX() - 0.05 * this.canvasService.currentScene.getRangeX();
+        Tx = this.canvasService.currentScene.getTrans().getX() - 0.1 * this.canvasService.currentScene.getRangeX() * this.canvasService.currentScene.getZoom();
         this.canvasService.currentScene.getTrans().setX(Tx);
         this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
@@ -167,7 +167,7 @@ export class DrawFractalComponent implements OnInit {
         break;
       case 'ArrowRight':
         //console.log('touche droit');
-        Tx = this.canvasService.currentScene.getTrans().getX() + 0.05 * this.canvasService.currentScene.getRangeX();
+        Tx = this.canvasService.currentScene.getTrans().getX() + 0.1 * this.canvasService.currentScene.getRangeX() * this.canvasService.currentScene.getZoom();
         this.canvasService.currentScene.getTrans().setX(Tx);
         this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
@@ -175,7 +175,7 @@ export class DrawFractalComponent implements OnInit {
         break;
       case 'ArrowUp':
         //console.log('touche haut');
-        Ty = this.canvasService.currentScene.getTrans().getY() - 0.05 * this.canvasService.currentScene.getRangeY();
+        Ty = this.canvasService.currentScene.getTrans().getY() - 0.1 * this.canvasService.currentScene.getRangeY() * this.canvasService.currentScene.getZoom();
         this.canvasService.currentScene.getTrans().setY(Ty);
         this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
@@ -183,7 +183,7 @@ export class DrawFractalComponent implements OnInit {
         break;
       case 'ArrowDown':
         //console.log('touche bas');
-        Ty = this.canvasService.currentScene.getTrans().getY() + 0.05 * this.canvasService.currentScene.getRangeY();
+        Ty = this.canvasService.currentScene.getTrans().getY() + 0.1 * this.canvasService.currentScene.getRangeY() * this.canvasService.currentScene.getZoom();
         this.canvasService.currentScene.getTrans().setY(Ty);
         this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();

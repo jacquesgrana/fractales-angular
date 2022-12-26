@@ -42,6 +42,7 @@
 
 .button-selected {
   background-color: $components-background-color-bis !important;
+  border: $components-border-thickness solid $components-background-color-accent;
 }
 
 .div-row {
@@ -132,6 +133,11 @@
 
 }
 
+.label-select {
+  font-size: 1.4rem !important;
+  color: $components-foreground-color !important;
+}
+
 .input {
   min-width: 300px;
   max-width: 400px;
@@ -197,4 +203,33 @@
       color: $components-background-color-accent;
   }
 }
+
+::ng-deep .mat-select {
+  color: $components-foreground-color !important;
+}
+
+::ng-deep .mat-select-placeholder {
+  color: $components-foreground-color !important;
+}
+
+::ng-deep .mat-select-panel {
+  border: calc($components-border-thickness / 2) solid black;
+  //border-radius: calc($components-border-radius / 2);
+}
+::ng-deep .mat-option {
+  background-color: $components-background-color !important;
+  color: white !important;
+}
+
+::ng-deep .mat-option:hover {
+  background-color: $components-background-color-bis !important;
+  color: $components-background-color-accent !important;
+}
+
+::ng-deep .mat-selected {
+  color: $components-background-color-bis !important;
+  background-color: $components-background-color-ter !important;
+}
+
+
 

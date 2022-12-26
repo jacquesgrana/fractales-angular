@@ -41,8 +41,8 @@
             (<span class="text-color-accent">{{canvasService.imag}}</span>) <span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> limite : <span class="text-color-accent">{{canvasService.limit}}</span> <span [innerHTML]="spaceChar"></span><span [innerHTML]="puceChar"></span><span [innerHTML]="spaceChar"></span> nb iter. max : <span class="text-color-accent">{{canvasService.iterNb}}</span></h4>
         <div class="div-row-2">
           <mat-form-field appearance="outline" color="accent" class="form-field">
-            <mat-label class="label">Choisir une fractale</mat-label>
-            <mat-select [(ngModel)]="canvasService.fractal" (selectionChange)="canvasService.changeFractal()">
+            <mat-label class="label-select">Choisir une fractale</mat-label>
+            <mat-select [(ngModel)]="canvasService.fractal" class="select-fractales" (selectionChange)="canvasService.changeFractal()">
               <mat-option *ngFor="let fractal of canvasService.fractals" [value]="fractal">{{fractal.getName()}}</mat-option>
             </mat-select>
           </mat-form-field>
