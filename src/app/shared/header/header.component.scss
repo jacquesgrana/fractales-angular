@@ -63,3 +63,10 @@ mat-toolbar {
   background-color: $components-background-color-ter !important;
   color: $components-background-color-bis !important;
 }
+
+.mat-divider {
+  border-top-color: black;
+  border: calc($components-border-thickness / 2) solid rgb(3, 36, 105);
+  margin-right: auto;
+  margin-left: auto;
+}

@@ -32,6 +32,8 @@
   width: 200px;
   margin-top: 1rem;
   margin-bottom: 0rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
   border: $components-border-thickness solid black;
   border-radius: $components-border-radius;
 }
@@ -47,7 +49,7 @@
 
 .div-row {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-center;
   //gap: 1rem;
   flex-wrap: wrap;
   padding: 1rem;

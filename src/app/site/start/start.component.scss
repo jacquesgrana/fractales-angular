@@ -11,11 +11,14 @@
 }
 
 .block-container {
-  max-width: 800px;
+  max-width: 600px;
   margin: auto;
   margin-top: 2rem;
   margin-bottom: 2rem;
-  padding: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   background-color: $components-background-color-bis;
   border: $components-border-thickness solid black;
   border-radius: $components-border-radius;
@@ -33,4 +36,26 @@
 
 .button-gen:hover {
   border: $components-border-thickness solid $components-foreground-color-accent;
+}
+
+.text {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: white;
+  font-size: 1rem;
+  line-height: 1.8rem;
+}
+
+.title {
+  margin-top: 1rem;
+  font-size: 1.6rem;
+}
+
+.mat-divider {
+  border-top-color: $components-background-color;
+  border: calc($components-border-thickness / 2) solid $components-background-color;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-right: auto;
+  margin-left: auto;
 }

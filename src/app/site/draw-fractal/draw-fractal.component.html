@@ -18,7 +18,7 @@
 
     <!-- (canvasService.calcFractalProgressObs$ | async) || 0 / canvasService.calcFractalProgress -->
     <section class="block">
-      <div class="div-row">
+      <div class="div-row flex-center">
         <button mat-flat-button color="primary" class="button-gen"
           (click)="toggleFractalDisplay()">{{canvasService.isFractalDisplayed ? "Masquer la fractale" : "Afficher la fractale"}}<span [innerHTML]="spaceChar"></span><mat-icon class="text-color-accent">{{canvasService.isFractalDisplayed ? "visibility_off" :
             "visibility_on"}}</mat-icon></button>
