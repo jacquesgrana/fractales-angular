@@ -6,6 +6,7 @@ import localeFrExtra from '@angular/common/locales/extra/fr';
 import { registerLocaleData } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { HelpDialogComponent } from './help-dialog/help-dialog.component';
+import { threadId } from 'worker_threads';
 registerLocaleData(localeFr, 'fr-FR', localeFrExtra);
 
 @Component({
@@ -34,6 +35,7 @@ export class DrawFractalComponent implements OnInit {
 
   ngOnInit(): void {
     //this.canvasService.cd = this.cd;
+    const progressBar = document.getElementById('progress-bar-calc');
   }
 
   /**
@@ -160,38 +162,43 @@ export class DrawFractalComponent implements OnInit {
       case 'ArrowLeft':
         //console.log('touche gauche');
         Tx = this.canvasService.currentScene.getTrans().getX() - 0.1 * this.canvasService.currentScene.getRangeX() * this.canvasService.currentScene.getZoom();
-        this.canvasService.currentScene.getTrans().setX(Tx);
-        this.canvasService.currentScene.updateMatrix();
+
+        this.canvasService.calculateTrans(- 0.1 * this.canvasService.currentScene.getRangeX() * this.canvasService.currentScene.getZoom(), 0);
+        //this.canvasService.currentScene.getTrans().setX(Tx);
+        //this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
       case 'ArrowRight':
         //console.log('touche droit');
         Tx = this.canvasService.currentScene.getTrans().getX() + 0.1 * this.canvasService.currentScene.getRangeX() * this.canvasService.currentScene.getZoom();
-        this.canvasService.currentScene.getTrans().setX(Tx);
-        this.canvasService.currentScene.updateMatrix();
+        this.canvasService.calculateTrans(0.1 * this.canvasService.currentScene.getRangeX() * this.canvasService.currentScene.getZoom(), 0);
+        //this.canvasService.currentScene.getTrans().setX(Tx);
+        //this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
       case 'ArrowUp':
         //console.log('touche haut');
         Ty = this.canvasService.currentScene.getTrans().getY() - 0.1 * this.canvasService.currentScene.getRangeY() * this.canvasService.currentScene.getZoom();
-        this.canvasService.currentScene.getTrans().setY(Ty);
-        this.canvasService.currentScene.updateMatrix();
+        this.canvasService.calculateTrans(0, - 0.1 * this.canvasService.currentScene.getRangeY() * this.canvasService.currentScene.getZoom());
+        //this.canvasService.currentScene.getTrans().setY(Ty);
+        //this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
       case 'ArrowDown':
         //console.log('touche bas');
         Ty = this.canvasService.currentScene.getTrans().getY() + 0.1 * this.canvasService.currentScene.getRangeY() * this.canvasService.currentScene.getZoom();
-        this.canvasService.currentScene.getTrans().setY(Ty);
-        this.canvasService.currentScene.updateMatrix();
+        this.canvasService.calculateTrans(0, 0.1 * this.canvasService.currentScene.getRangeY() * this.canvasService.currentScene.getZoom());
+        //this.canvasService.currentScene.getTrans().setY(Ty);
+        //this.canvasService.currentScene.updateMatrix();
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
       case 'a':
         //console.log('touche a');
-        this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() - 5.0);
+        this.canvasService.currentScene.setAngle((this.canvasService.currentScene.getAngle() - 5.0) % 360);
         this.canvasService.currentScene.updateMatrix();
         this.canvasService.angle = this.canvasService.currentScene.getAngle();
         this.canvasService.updateDisplay();
@@ -199,7 +206,7 @@ export class DrawFractalComponent implements OnInit {
         break;
       case 'z':
         //console.log('touche z');
-        this.canvasService.currentScene.setAngle(this.canvasService.currentScene.getAngle() + 5.0);
+        this.canvasService.currentScene.setAngle((this.canvasService.currentScene.getAngle() + 5.0) % 360);
         this.canvasService.currentScene.updateMatrix();
         this.canvasService.angle = this.canvasService.currentScene.getAngle();
         this.canvasService.updateDisplay();
@@ -210,6 +217,7 @@ export class DrawFractalComponent implements OnInit {
         this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 1.05);
         this.canvasService.currentScene.updateMatrix();
         this.canvasService.zoom = this.canvasService.currentScene.getZoom();
+        this.canvasService.zoomProgressObs$.next(this.canvasService.calculateZoomPercent(this.canvasService.zoom));
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;
@@ -218,6 +226,7 @@ export class DrawFractalComponent implements OnInit {
         this.canvasService.currentScene.setZoom(this.canvasService.currentScene.getZoom() * 0.95);
         this.canvasService.currentScene.updateMatrix();
         this.canvasService.zoom = this.canvasService.currentScene.getZoom();
+        this.canvasService.zoomProgressObs$.next(this.canvasService.calculateZoomPercent(this.canvasService.zoom));
         this.canvasService.updateDisplay();
         //this.cd.detectChanges();
         break;

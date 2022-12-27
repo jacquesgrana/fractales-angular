@@ -12,7 +12,10 @@ import { MathLibrary } from '../libraries/math-library';
 
 const COLOR_FILL_SELECT: string = 'rgba(235, 125, 52, 0.38)';
 const COLOR_STROKE_SELECT: string = 'rgba(235, 125, 52, 0.0)';
+const COLOR_STROKE_ANGLE_INDICATOR: string = 'rgba(245, 34, 45, 1.0)';
+const COLOR_FILL_ANGLE_INDICATOR: string = 'rgba(252, 141, 30, 0.62)';
 const COLOR_BACKGROUND: string = 'rgba(20,20,20,1.0)';
+
 
 /**
  * Classe du service qui gère le canvas
@@ -70,6 +73,9 @@ export class CanvasService {
   public calcFractalProgressObs$!: Subject<number>;
   public calcFractalProgress: number = 0;
 
+  public zoomProgressObs$!: Subject<number>;
+  public zoomProgress: number = 0;
+
   public cd!: ChangeDetectorRef
 
   constructor() {
@@ -86,6 +92,15 @@ export class CanvasService {
     });
     this.calcFractalProgressObs$.next(0);
 
+    this.zoomProgressObs$ = new Subject<number>();
+    this.zoomProgressObs$.subscribe(v => {
+      this.zoomProgress = v;
+    });
+    this.zoomProgressObs$.next(40);
+  }
+
+  calculateZoomPercent(zoom: number): number {
+    return 40 + 10 * MathLibrary.logN(10, 1/zoom);
   }
 
   /**
@@ -291,7 +306,18 @@ export class CanvasService {
     this.currentScene.getTrans().setY(Ty);
     this.currentScene.updateMatrix();
     this.zoom = this.currentScene.getZoom();
+    this.zoomProgressObs$.next(this.calculateZoomPercent(this.zoom));
     this.updateDisplay();
+  }
+
+  calculateTrans(deltaX: number, deltaY: number): void {
+    const cos: number = Math.cos(MathLibrary.degreeToRad(this.currentScene.getAngle()));
+    const sin: number = Math.sin(MathLibrary.degreeToRad(this.currentScene.getAngle()));
+    const dX: number = deltaX * cos -1 * deltaY * sin;
+    const dY: number = deltaX * sin + deltaY * cos;
+    this.currentScene.getTrans().setX(this.currentScene.getTrans().getX() + dX);
+    this.currentScene.getTrans().setY(this.currentScene.getTrans().getY() + dY);
+    this.currentScene.updateMatrix();
   }
 
   /**
@@ -314,9 +340,6 @@ export class CanvasService {
       const minPix = new Pixel(Math.min(startPix.getI(), endPix.getI()), Math.min(startPix.getJ(), endPix.getJ()));
 
       this.deleteSelection();
-
-
-
       // copie de l'ancien rectangle dans le tempData et des dimensions getImageData(sx, sy, sw, sh)
       this.startPixTemp = minPix;
       let deltaI = Math.abs(endPix.getI() - startPix.getI());
@@ -449,12 +472,13 @@ export class CanvasService {
     this.currentScene.setAngle(this.angle);
     this.currentScene.setZoom(this.zoom);
     this.currentScene.updateMatrix();
+    this.zoomProgressObs$.next(this.calculateZoomPercent(this.zoom));
   }
 
   /**
-   * Méthode qui dessine les axes
+   * Méthode qui dessine les axes et l'indicateur graphique de la rotation
    */
-  drawAxes() {
+  drawAxes(): void {
     const originPt = new Point(0.0, 0.0);
     const originPx = GraphicLibrary.calcPixelFromPoint(originPt, this.currentScene, this.canvasWidth, this.canvasHeight);
     const vectorIPoint = new Point(1, 0);
@@ -468,6 +492,49 @@ export class CanvasService {
     this.drawCircle(vectorJPoint, 4, true, 1, this.axesColor, this.originColor, this.context);
     this.drawCircle(originPt, originPx.calcDist(vectorIPix), false, 1, this.axesColor, this.originColor, this.context);
     this.drawCircle(originPt, 8, false, 1, this.axesColor, this.originColor, this.context);
+    this.drawRotIndicator();
+  }
+
+  drawRotIndicator(): void {
+    const radius: number = 30;
+    const gap: number = 20;
+    const center: Pixel = new Pixel(gap + radius, gap + radius);
+    const angleRad: number = MathLibrary.degreeToRad(this.currentScene.getAngle());
+    //console.log('angleRad :', angleRad);
+    const isTrigoRot = angleRad < 0;
+    //this.context.save();
+    this.context.beginPath();
+    this.context.moveTo(center.getI(), center.getJToDraw(this.canvasHeight));
+    this.context.arc(center.getI(), center.getJToDraw(this.canvasHeight), radius, 0, angleRad, isTrigoRot);
+    this.context.closePath();
+    this.context.fillStyle = COLOR_FILL_ANGLE_INDICATOR;
+    this.context.fill();
+
+
+    this.context.beginPath();
+    this.context.moveTo(center.getI(), center.getJToDraw(this.canvasHeight));
+    this.context.arc(center.getI(), center.getJToDraw(this.canvasHeight), radius, 0, 2 * Math.PI, true);
+    this.context.closePath();
+    this.context.strokeStyle = COLOR_STROKE_ANGLE_INDICATOR;
+    this.context.stroke();
+
+    const gapLittle: number = 5;
+    const radiusLittle: number = 5;
+    const centerLittle: Pixel = new Pixel(gap + radius, gap + radius + radius + gapLittle + radiusLittle);
+    const radiusBig: number = radius + radiusLittle + gapLittle;
+
+    const cos = Math.cos(MathLibrary.degreeToRad(this.currentScene.getAngle()));
+    const sin = Math.sin(MathLibrary.degreeToRad(this.currentScene.getAngle()));
+    const rotCenterLittle: Pixel = new Pixel(center.getI() + radiusBig * sin, center.getJ() + radiusBig * cos);
+
+    this.context.beginPath();
+    this.context.moveTo(rotCenterLittle.getI(), rotCenterLittle.getJToDraw(this.canvasHeight));
+    this.context.arc(rotCenterLittle.getI(), rotCenterLittle.getJToDraw(this.canvasHeight), radiusLittle, 0, 2 * Math.PI, true);
+    this.context.closePath();
+    this.context.fillStyle = COLOR_STROKE_ANGLE_INDICATOR;
+    this.context.fill();
+
+    //this.context.restore();
   }
 
   /**

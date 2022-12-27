@@ -1,7 +1,8 @@
 <div class="body-container">
   <section class="block-container" id="block-container">
     <app-canvas></app-canvas>
-    <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async" class="progress-bar mb-4"></mat-progress-bar>
+    <mat-progress-bar mode="determinate" [value]="canvasService.zoomProgress" class="progress-bar mb-4" id="progress-bar-zoom"></mat-progress-bar>
+    <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async" class="progress-bar mb-4" id="progress-bar-calc"></mat-progress-bar>
     <div>
       <p class="text-center text-infos text-color-white">
         Translation : x : <span class="text-color-accent">{{canvasService.trans.getX() | number:'1.0-6':'fr-FR'}}</span>

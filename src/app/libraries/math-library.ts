@@ -7,11 +7,11 @@ export class MathLibrary {
  * @param x : valeur a traiter
  * @return log à base n de x
  */
-static logN(n: number, x: number): number | null {
+static logN(n: number, x: number): number {
   if (n > 0 && x > 0) {
     return (Math.log(x) / Math.log(n));
   }
-  return null;
+  return Number.NEGATIVE_INFINITY;
 }
 
 /**

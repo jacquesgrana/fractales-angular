@@ -99,7 +99,11 @@
 }
 
 ::ng-deep .mat-progress-bar {
-  border-radius: 5px;
+  width: 80% !important;
+}
+
+.progress-bar {
+
 }
 
 .form-field {
