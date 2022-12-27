@@ -15,8 +15,11 @@ const COLOR_STROKE_SELECT: string = 'rgba(235, 125, 52, 0.0)';
 const COLOR_STROKE_ANGLE_INDICATOR: string = 'rgba(245, 34, 45, 1.0)';
 const COLOR_FILL_ANGLE_INDICATOR: string = 'rgba(252, 141, 30, 0.62)';
 const COLOR_BACKGROUND: string = 'rgba(20,20,20,1.0)';
+const COLOR_STROKE_AXES: string = 'rgba(255,255,255,0.38)';
+const COLOR_FILL_AXES: string = 'rgba(255,255,255,0.62)';
 
-
+const DEFAULT_ZOOM_PERCENT_VALUE: number = 10;
+const STEP_ZOOM_PERCENT_VALUE: number = 7;
 /**
  * Classe du service qui gère le canvas
  */
@@ -37,8 +40,8 @@ export class CanvasService {
   public context!: CanvasRenderingContext2D;
 
   //public backgroundColor: string = 'rgba(20,20,20,1.0)';
-  public axesColor: string = 'rgba(255,255,255,0.38)';
-  public originColor: string = 'rgba(255,255,255,0.62)';
+  //public axesColor: string = 'rgba(255,255,255,0.38)';
+  //public originColor: string = 'rgba(255,255,255,0.62)';
 
   public currentScene!: Scene;
   public trans: Point = new Point(0, 0);;
@@ -96,11 +99,11 @@ export class CanvasService {
     this.zoomProgressObs$.subscribe(v => {
       this.zoomProgress = v;
     });
-    this.zoomProgressObs$.next(40);
+    this.zoomProgressObs$.next(DEFAULT_ZOOM_PERCENT_VALUE);
   }
 
   calculateZoomPercent(zoom: number): number {
-    return 40 + 10 * MathLibrary.logN(10, 1/zoom);
+    return DEFAULT_ZOOM_PERCENT_VALUE + STEP_ZOOM_PERCENT_VALUE * MathLibrary.logN(10, 1/zoom);
   }
 
   /**
@@ -486,12 +489,12 @@ export class CanvasService {
     const vectorIOppPoint = new Point(-1, 0);
     const vectorJPoint = new Point(0, 1);
     const vectorJOppPoint = new Point(0, -1);
-    this.drawLine(vectorIPoint, vectorIOppPoint, 1, this.axesColor, this.context);
-    this.drawLine(vectorJPoint, vectorJOppPoint, 1, this.axesColor, this.context);
-    this.drawCircle(vectorIPoint, 4, true, 1, this.axesColor, this.originColor, this.context);
-    this.drawCircle(vectorJPoint, 4, true, 1, this.axesColor, this.originColor, this.context);
-    this.drawCircle(originPt, originPx.calcDist(vectorIPix), false, 1, this.axesColor, this.originColor, this.context);
-    this.drawCircle(originPt, 8, false, 1, this.axesColor, this.originColor, this.context);
+    this.drawLine(vectorIPoint, vectorIOppPoint, 1, COLOR_STROKE_AXES, this.context);
+    this.drawLine(vectorJPoint, vectorJOppPoint, 1, COLOR_STROKE_AXES, this.context);
+    this.drawCircle(vectorIPoint, 4, true, 1, COLOR_STROKE_AXES, COLOR_FILL_AXES, this.context);
+    this.drawCircle(vectorJPoint, 4, true, 1, COLOR_STROKE_AXES, COLOR_FILL_AXES, this.context);
+    this.drawCircle(originPt, originPx.calcDist(vectorIPix), false, 1, COLOR_STROKE_AXES, COLOR_FILL_AXES, this.context);
+    this.drawCircle(originPt, 8, false, 1, COLOR_STROKE_AXES, COLOR_FILL_AXES, this.context);
     this.drawRotIndicator();
   }
 
@@ -501,11 +504,11 @@ export class CanvasService {
     const center: Pixel = new Pixel(gap + radius, gap + radius);
     const angleRad: number = MathLibrary.degreeToRad(this.currentScene.getAngle());
     //console.log('angleRad :', angleRad);
-    const isTrigoRot = angleRad < 0;
+    const isTrigoNotRot = angleRad < 0;
     //this.context.save();
     this.context.beginPath();
     this.context.moveTo(center.getI(), center.getJToDraw(this.canvasHeight));
-    this.context.arc(center.getI(), center.getJToDraw(this.canvasHeight), radius, 0, angleRad, isTrigoRot);
+    this.context.arc(center.getI(), center.getJToDraw(this.canvasHeight), radius, 0, angleRad, isTrigoNotRot);
     this.context.closePath();
     this.context.fillStyle = COLOR_FILL_ANGLE_INDICATOR;
     this.context.fill();
