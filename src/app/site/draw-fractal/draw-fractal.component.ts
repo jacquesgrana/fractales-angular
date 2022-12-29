@@ -6,7 +6,8 @@ import localeFrExtra from '@angular/common/locales/extra/fr';
 import { registerLocaleData } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { HelpDialogComponent } from './help-dialog/help-dialog.component';
-import { threadId } from 'worker_threads';
+//import { NgTemplateOutlet } from '@angular/common';
+
 registerLocaleData(localeFr, 'fr-FR', localeFrExtra);
 
 @Component({
@@ -35,7 +36,7 @@ export class DrawFractalComponent implements OnInit {
 
   ngOnInit(): void {
     //this.canvasService.cd = this.cd;
-    const progressBar = document.getElementById('progress-bar-calc');
+    //const progressBar = document.getElementById('progress-bar-calc');
   }
 
   /**

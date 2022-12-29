@@ -3,6 +3,8 @@ import { fromEvent, Observable, Subscription } from 'rxjs';
 import { Pixel } from 'src/app/classes/pixel';
 import { CanvasService } from 'src/app/services/canvas.service';
 
+const CANVAS_HEIGHT: number = 800;
+
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
@@ -148,7 +150,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.canvasService.isSelectionDraw = false;
       this.canvasService.dataTemp = null;
       this.canvasService.startPixTemp = null;
-      
+
     }
     //console.log('isSelectionDraw :', this.canvasService.isSelectionDraw);
   }
@@ -181,7 +183,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       this.canvasService.canvasWidth = width - 80;
     }
     if (height !== undefined) {
-      this.canvasService.canvasHeight = 800;
+      this.canvasService.canvasHeight = CANVAS_HEIGHT;
     }
     //console.log('canvas width :', this.canvasService.canvasWidth, ' canvas height :', this.canvasService.canvasHeight);
     //console.log('ctx canvas width :', this.context.canvas.clientWidth, ' ctx canvas height :', this.context.canvas.clientHeight);

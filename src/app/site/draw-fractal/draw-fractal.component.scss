@@ -102,8 +102,36 @@
   width: auto;
 }
 
-.progress-bar {
+.progress-scale {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: $components-background-color-ter;
+  font-family: 'Arial Narrow Bold', Impact, Haettenschweiler, sans-serif;
+  font-stretch: extra-condensed;
+}
 
+.scale-item {
+  width: 6%;
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: -0.8rem;
+}
+
+.scale-item-bottom {
+  width: 6%;
+  color: $components-background-color-ter;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-bottom: -0.4rem;
+}
+
+.fake-item {
+  width: 3%;
+}
+
+::ng-deep #progress-bar-zoom .mat-progress-bar-fill::after {
+  background: $components-background-color-ter !important;
 }
 
 .form-field {
