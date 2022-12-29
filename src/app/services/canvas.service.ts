@@ -19,8 +19,11 @@ const COLOR_BACKGROUND: string = 'rgba(20,20,20,1.0)';
 const COLOR_STROKE_AXES: string = 'rgba(255,255,255,0.38)';
 const COLOR_FILL_AXES: string = 'rgba(255,255,255,0.62)';
 
-const DEFAULT_ZOOM_PERCENT_VALUE: number = 11.25;
-const STEP_ZOOM_PERCENT_VALUE: number = 5.625;
+const DEFAULT_ZOOM_PERCENT_VALUE: number = 12;
+const STEP_ZOOM_PERCENT_VALUE: number = 5.88;
+
+const DEFAULT_GRADIENT_START: number = 3;
+const DEFAULT_GRADIANT_END: number = 5;
 /**
  * Classe du service qui gère le canvas
  */
@@ -58,8 +61,8 @@ export class CanvasService {
   public limit: number = 2;
   public iterNb: number = 100;
 
-  public gradientStart: number = 3;
-  public gradientEnd: number = 5;
+  public gradientStart: number = DEFAULT_GRADIENT_START;
+  public gradientEnd: number = DEFAULT_GRADIANT_END;
 
   public isFractalDisplayed: boolean = true;
   public isAxesDisplayed: boolean = true;
@@ -465,8 +468,8 @@ export class CanvasService {
     this.imag = this.fractal.getSeed().getImag();
     this.limit = this.fractal.getLimit();
     this.iterNb = this.fractal.getMaxIt();
-    this.gradientStart = 3;
-    this.gradientEnd = 5;
+    this.gradientStart = DEFAULT_GRADIENT_START;
+    this.gradientEnd = DEFAULT_GRADIANT_END;
   }
 
   /**
