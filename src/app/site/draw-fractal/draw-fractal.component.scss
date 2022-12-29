@@ -134,8 +134,12 @@
   background: $components-background-color-ter !important;
 }
 
+::ng-deep #progress-bar-zoom .mat-progress-bar-buffer {
+  background: $components-background-color-quart;
+}
+
 .comment {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   margin-top: -2.8rem;
 }
 

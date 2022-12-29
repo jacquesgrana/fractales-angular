@@ -19,8 +19,8 @@ const COLOR_BACKGROUND: string = 'rgba(20,20,20,1.0)';
 const COLOR_STROKE_AXES: string = 'rgba(255,255,255,0.38)';
 const COLOR_FILL_AXES: string = 'rgba(255,255,255,0.62)';
 
-const DEFAULT_ZOOM_PERCENT_VALUE: number = 12;
-const STEP_ZOOM_PERCENT_VALUE: number = 5.88;
+const DEFAULT_ZOOM_PERCENT_VALUE: number = 11.76;
+const STEP_ZOOM_PERCENT_VALUE: number = 5.96;
 
 const DEFAULT_GRADIENT_START: number = 3;
 const DEFAULT_GRADIANT_END: number = 5;
