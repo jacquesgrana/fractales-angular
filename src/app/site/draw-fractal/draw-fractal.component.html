@@ -21,8 +21,8 @@
       <div class="scale-item">10<sup>15</sup> %</div>
       <div class="scale-item">10<sup>16</sup> %</div>
       <div class="scale-item">10<sup>17</sup> %</div>
-      <div class="scale-item">10<sup>18</sup> %</div>
-      <div class="scale-item">10<sup>19</sup> %</div>
+
+
       <div class="fake-item"></div>
     </div>
     <div class="progress-scale mt-0 mb-0">
@@ -44,10 +44,9 @@
       <div class="scale-item-bottom text-color-primary">|</div>
       <div class="scale-item-bottom text-color-primary">|</div>
       <div class="scale-item-bottom text-color-primary">|</div>
-      <div class="scale-item-bottom text-color-primary">|</div>
-      <div class="scale-item-bottom text-color-primary">|</div>
       <div class="fake-item"></div>
     </div>
+
     <mat-progress-bar mode="determinate" [value]="canvasService.zoomProgress" class="progress-bar mb-4" id="progress-bar-zoom">
 <!--
       <ng-template mat-progress-bar-label>
@@ -60,7 +59,9 @@
         </div>
       </ng-template>
 -->
+
     </mat-progress-bar>
+    <p class="text-center comment">Temps de calcul (ms) : {{canvasService.calcTime}}</p>
     <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async" class="mb-4" id="progress-bar-calc"></mat-progress-bar>
     <div>
       <p class="text-center text-infos text-color-white">

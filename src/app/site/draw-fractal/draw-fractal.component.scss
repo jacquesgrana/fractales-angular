@@ -114,7 +114,7 @@
 .scale-item {
   width: 6%;
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.85rem;
   margin-bottom: -0.8rem;
 }
 
@@ -132,6 +132,10 @@
 
 ::ng-deep #progress-bar-zoom .mat-progress-bar-fill::after {
   background: $components-background-color-ter !important;
+}
+
+.comment {
+  font-size: 0.75rem;
 }
 
 .form-field {

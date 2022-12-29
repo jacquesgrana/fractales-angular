@@ -19,8 +19,8 @@ const COLOR_BACKGROUND: string = 'rgba(20,20,20,1.0)';
 const COLOR_STROKE_AXES: string = 'rgba(255,255,255,0.38)';
 const COLOR_FILL_AXES: string = 'rgba(255,255,255,0.62)';
 
-const DEFAULT_ZOOM_PERCENT_VALUE: number = 10;
-const STEP_ZOOM_PERCENT_VALUE: number = 5;
+const DEFAULT_ZOOM_PERCENT_VALUE: number = 11.25;
+const STEP_ZOOM_PERCENT_VALUE: number = 5.625;
 /**
  * Classe du service qui gère le canvas
  */
@@ -80,6 +80,9 @@ export class CanvasService {
   public zoomProgressObs$!: Subject<number>;
   public zoomProgress: number = 0;
 
+  public calcTimeObs$!: Subject<number>;
+  public calcTime: number = 0;
+
   public cd!: ChangeDetectorRef
 
   constructor() {
@@ -101,6 +104,11 @@ export class CanvasService {
       this.zoomProgress = v;
     });
     this.zoomProgressObs$.next(DEFAULT_ZOOM_PERCENT_VALUE);
+
+    this.calcTimeObs$ = new Subject<number>();
+    this.calcTimeObs$.subscribe(v => {
+      this.calcTime = v;
+    })
   }
 
   calculateZoomPercent(zoom: number): number {
@@ -180,6 +188,8 @@ export class CanvasService {
    * @returns promise tableau contenant les couleurs calculées des pixels du canvas
    */
   public async updateTabToDraw(): Promise<Color[][]> {
+    let startTime: Date = new Date(Date.now());
+    let endTime: Date;
     const max = (this.canvasWidth * this.canvasHeight) - 1;
     let cpt = 0;
     let pix = new Pixel(0, 0);
@@ -196,7 +206,7 @@ export class CanvasService {
         tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
 
         let jobPercent = Math.round(100 * cpt / max);
-        if (jobPercent % 25 === 0) {
+        //if (jobPercent % 25 === 0) {
           //requestAnimationFrame(() => {this.calcFractalProgressObs$.next(jobPercent);})
           /*
                     Promise.resolve(1).then(function resolve(this: any) {
@@ -212,11 +222,13 @@ export class CanvasService {
             resolve();
           }).then(() => this.calcFractalProgressObs$.next(jobPercent));
           */
-        }
+        //}
         cpt++;
       }
     }
     this.calcFractalProgressObs$.next(100);
+    endTime = new Date(Date.now());
+    this.calcTimeObs$.next(endTime.getTime() - startTime.getTime());
     setTimeout(() => {
       this.calcFractalProgressObs$.next(0);
     }, 500);
