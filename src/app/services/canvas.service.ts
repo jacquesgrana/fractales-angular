@@ -190,23 +190,6 @@ export class CanvasService {
     //this.data = this.imageData.data;
   }
 
-
-  /*
-  // TODO test du worker
-    if (typeof Worker !== 'undefined') {
-      // Create a new
-      const worker = new Worker(new URL('./../workers/calculate.worker', import.meta.url));
-      worker.onmessage = ({ data }) => {
-        console.log(`page got message: ${data}`);
-      };
-      worker.postMessage('hello');
-    } else {
-      // Web workers are not supported in this environment.
-      // You should add a fallback so that your program still executes correctly.
-    }
-  */
-
-
   /**
    * Méthode qui calcule et renvoie le tableau des couleurs calculées selon la fractale
    * @returns promise tableau contenant les couleurs calculées des pixels du canvas
@@ -256,6 +239,11 @@ export class CanvasService {
 
   }
 
+  /**
+   * Méthode qui calcule et renvoie le tableau des couleurs calculées selon la fractale
+   * en utilisant le web worker : this.worker
+   * @returns promise tableau contenant les couleurs calculées des pixels du canvas
+   */
   public async updateTabToDrawWithWorker(): Promise<Color[][]> {
     let startTime: Date = new Date(Date.now());
     let endTime: Date;
@@ -465,7 +453,7 @@ export class CanvasService {
   }
 
   /**
-   * Méthode qui affiche la fractale
+   * Méthode qui affiche la fractale ******************************************************************************************************************************************************
    */
   drawFractal(): void {
     this.initImageData();
