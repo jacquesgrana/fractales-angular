@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
+import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { Subject } from 'rxjs';
 import { Color } from '../classes/color';
 import { ComplexNb } from '../classes/complex-nb';
@@ -88,6 +89,8 @@ export class CanvasService {
 
   public cd!: ChangeDetectorRef
 
+  public worker = new Worker(new URL('./../workers/calculate.worker', import.meta.url));
+
   constructor() {
     this.initFractalList();
     this.fractal = this.fractals[0];
@@ -162,6 +165,8 @@ export class CanvasService {
     const deltaX = deltaY * this.canvasWidth / this.canvasHeight;
     const minX = -1 * deltaX / 2;
     this.currentScene = new Scene(minX, minY, deltaX, deltaY, this.trans, this.angle, this.zoom);
+
+
   }
 
   /**
@@ -186,58 +191,103 @@ export class CanvasService {
   }
 
 
+  /*
+  // TODO test du worker
+    if (typeof Worker !== 'undefined') {
+      // Create a new
+      const worker = new Worker(new URL('./../workers/calculate.worker', import.meta.url));
+      worker.onmessage = ({ data }) => {
+        console.log(`page got message: ${data}`);
+      };
+      worker.postMessage('hello');
+    } else {
+      // Web workers are not supported in this environment.
+      // You should add a fallback so that your program still executes correctly.
+    }
+  */
+
+
   /**
    * Méthode qui calcule et renvoie le tableau des couleurs calculées selon la fractale
    * @returns promise tableau contenant les couleurs calculées des pixels du canvas
    */
   public async updateTabToDraw(): Promise<Color[][]> {
+
+
+
+    //this.cd.detectChanges();
+    return new Promise<Color[][]>((resolve) => {
+      let startTime: Date = new Date(Date.now());
+      let endTime: Date;
+      let tabToDraw: Color[][] = new Array(this.canvasHeight);;
+
+      const max = (this.canvasWidth * this.canvasHeight) - 1;
+      let cpt = 0;
+      let pix = new Pixel(0, 0);
+      //let tabToDraw: Color[][] = new Array(this.canvasWidth);
+      for (let i = 0; i < this.canvasWidth; i++) {
+        tabToDraw[i] = new Array(this.canvasHeight);
+        for (let j = 0; j < this.canvasHeight; j++) {
+
+          pix.setI(i);
+          pix.setJ(j);
+          let pointM = GraphicLibrary.calcPointFromPix(pix, this.currentScene, this.canvasWidth, this.canvasHeight);
+          let z = new ComplexNb(true, pointM.getX(), pointM.getY());
+          let colorPt = this.fractal.calcColorFromJuliaFractal(z, this.gradientStart, this.gradientEnd - this.gradientStart, COLOR_BACKGROUND);
+          tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
+
+          let jobPercent = Math.round(100 * cpt / max);
+          //if (jobPercent % 25 === 0) {
+
+          //}
+          cpt++;
+        }
+      }
+
+      this.calcFractalProgressObs$.next(100);
+      endTime = new Date(Date.now());
+      this.calcTimeObs$.next(endTime.getTime() - startTime.getTime());
+
+      setTimeout(() => {
+        this.calcFractalProgressObs$.next(0);
+      }, 400);
+      resolve(tabToDraw);
+    });
+
+  }
+
+  public async updateTabToDrawWithWorker(): Promise<Color[][]> {
     let startTime: Date = new Date(Date.now());
     let endTime: Date;
-    const max = (this.canvasWidth * this.canvasHeight) - 1;
-    let cpt = 0;
-    let pix = new Pixel(0, 0);
-    let tabToDraw: Color[][] = new Array(this.canvasWidth);
-    for (let i = 0; i < this.canvasWidth; i++) {
-      tabToDraw[i] = new Array(this.canvasHeight);
-      for (let j = 0; j < this.canvasHeight; j++) {
+    //let tabToDraw: Color[][] = new Array(this.canvasWidth);
 
-        pix.setI(i);
-        pix.setJ(j);
-        let pointM = GraphicLibrary.calcPointFromPix(pix, this.currentScene, this.canvasWidth, this.canvasHeight);
-        let z = new ComplexNb(true, pointM.getX(), pointM.getY());
-        let colorPt = this.fractal.calcColorFromJuliaFractal(z, this.gradientStart, this.gradientEnd - this.gradientStart, COLOR_BACKGROUND);
-        tabToDraw[pix.getI()][pix.getJToDraw(this.canvasHeight)] = colorPt;
 
-        let jobPercent = Math.round(100 * cpt / max);
-        //if (jobPercent % 25 === 0) {
-          //requestAnimationFrame(() => {this.calcFractalProgressObs$.next(jobPercent);})
-          /*
-                    Promise.resolve(1).then(function resolve(this: any) {
-                      this.calcFractalProgressObs$.next(jobPercent);
-                    });
-                    */
-          /*
-          setTimeout(() => {
-            this.calcFractalProgressObs$.next(jobPercent);
-          }, 1);*/
-          /*
-          const promise = new Promise<void>((resolve, reject) => {
-            resolve();
-          }).then(() => this.calcFractalProgressObs$.next(jobPercent));
-          */
-        //}
-        cpt++;
+    return new Promise<Color[][]>((resolve) => {
+
+      this.worker.onmessage = ({ data }) => {
+        //console.log(`page got message: ${data}`);
+        if (data.isJobDone === 'true') {
+          this.calcFractalProgressObs$.next(data.jobPercent);
+          endTime = new Date(Date.now());
+          this.calcTimeObs$.next(endTime.getTime() - startTime.getTime());
+          resolve(data.tabToDraw);
+        }
+        else if (data.isJobDone === 'false') {
+          this.calcFractalProgressObs$.next(data.jobPercent);
+        }
+      };
+      let dataToSend: any = {};
+      dataToSend = {
+        canvasWidth: this.canvasWidth,
+        canvasHeight: this.canvasHeight,
+        currentScene: this.currentScene,
+        gradientStart: this.gradientStart,
+        gradientEnd: this.gradientEnd,
+        fractal: this.fractal,
+        COLOR_BACKGROUND: COLOR_BACKGROUND
       }
-    }
-    this.calcFractalProgressObs$.next(100);
-    endTime = new Date(Date.now());
-    this.calcTimeObs$.next(endTime.getTime() - startTime.getTime());
-    setTimeout(() => {
-      this.calcFractalProgressObs$.next(0);
-    }, 500);
-
-    return tabToDraw;
-
+      this.worker.postMessage(dataToSend);
+    });
   }
 
   /**
@@ -247,10 +297,10 @@ export class CanvasService {
     for (let i = 0; i < this.canvasWidth; i++) {
       for (let j = 0; j < this.canvasHeight; j++) {
         let indice: number = (j * this.canvasWidth * 4) + (i * 4);
-        this.imageData.data[indice] = this.tabToDraw[i][j].getRed();
-        this.imageData.data[indice + 1] = this.tabToDraw[i][j].getGreen();
-        this.imageData.data[indice + 2] = this.tabToDraw[i][j].getBlue();
-        this.imageData.data[indice + 3] = this.tabToDraw[i][j].getAlpha();
+        this.imageData.data[indice] = this.tabToDraw[i][j].red;
+        this.imageData.data[indice + 1] = this.tabToDraw[i][j].green;
+        this.imageData.data[indice + 2] = this.tabToDraw[i][j].blue;
+        this.imageData.data[indice + 3] = this.tabToDraw[i][j].alpha;
       }
     }
     //this.imageData.data = this.data;
@@ -426,6 +476,7 @@ export class CanvasService {
         this.loadImageFromTab();
         this.context.imageSmoothingQuality = "high";
         this.context.putImageData(this.imageData, 0, 0);
+        //this.calcFractalProgressObs$.next(0);
         if (this.isAxesDisplayed) this.drawAxes();
       }
     );
@@ -560,6 +611,19 @@ export class CanvasService {
     this.context.fill();
 
     //this.context.restore();
+  }
+
+  drawCircleFromPix(center: Pixel, isFilled: boolean, radius: number, strokeWeight: number, strokeColor: string, fillColor: string, context: CanvasRenderingContext2D): void {
+    context.beginPath();
+    context.arc(center.getI(), center.getJToDraw(this.canvasHeight), radius, 0, 2 * Math.PI, true);
+    context.closePath();
+    if (isFilled) {
+      context.fillStyle = fillColor;
+      context.fill();
+    }
+    context.lineWidth = strokeWeight;
+    context.strokeStyle = strokeColor;
+    this.context.stroke();
   }
 
   /**

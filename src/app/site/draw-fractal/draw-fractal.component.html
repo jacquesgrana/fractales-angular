@@ -1,9 +1,9 @@
 <div class="body-container">
   <section class="block-container" id="block-container">
     <app-canvas></app-canvas>
-    <p class="text-center text-color-primary comment">Temps de calcul : {{canvasService.calcTime}} ms</p>
-    <p class="text-center text-infos text-color-white mt-2">Zoom (%)</p>
-    <div class="progress-scale  mt-0 mb-0">
+    <p *ngIf="canvasService.isAxesDisplayed" class="text-center text-color-primary comment">Temps de calcul : {{canvasService.calcTime}} ms</p>
+    <p *ngIf="canvasService.isAxesDisplayed" class="text-center text-infos text-color-primary-light mt-2">Zoom (%)</p>
+    <div *ngIf="canvasService.isAxesDisplayed" class="progress-scale  mt-0 mb-0">
       <div class="fake-item"></div>
       <div class="scale-item">10</div>
       <div class="scale-item">100</div>
@@ -23,7 +23,7 @@
       <div class="scale-item">10<sup>16</sup></div>
       <div class="fake-item"></div>
     </div>
-    <div class="progress-scale mt-0 mb-0">
+    <div *ngIf="canvasService.isAxesDisplayed" class="progress-scale mt-0 mb-0">
       <div class="fake-item"></div>
       <div class="scale-item-bottom text-color-primary">|</div>
       <div class="scale-item-bottom text-color-primary">|</div>
@@ -44,7 +44,7 @@
       <div class="fake-item"></div>
     </div>
 
-    <mat-progress-bar mode="determinate" [value]="canvasService.zoomProgress" class="progress-bar mb-4" id="progress-bar-zoom">
+    <mat-progress-bar *ngIf="canvasService.isAxesDisplayed" mode="determinate" [value]="canvasService.zoomProgress" class="progress-bar mb-4" id="progress-bar-zoom">
 <!--
       <ng-template mat-progress-bar-label>
         <div class="progress-scale">
@@ -60,7 +60,7 @@
     </mat-progress-bar>
 
     <mat-progress-bar mode="determinate" [value]="canvasService.calcFractalProgressObs$ | async" class="mb-4" id="progress-bar-calc"></mat-progress-bar>
-    <div>
+    <div *ngIf="canvasService.isAxesDisplayed">
       <p class="text-center text-infos text-color-white">
         Translation : x : <span class="text-color-accent">{{canvasService.trans.getX() | number:'1.0-6':'fr-FR'}}</span>
         <span [innerHTML]="spaceChar"></span><span [innerHTML]="spaceChar"></span>&#x2022;<span [innerHTML]="spaceChar"></span> y : <span class="text-color-accent">{{canvasService.trans.getY() | number:'1.0-6':'fr-FR'}}</span>
@@ -81,7 +81,7 @@
           (click)="toggleFractalDisplay()">{{canvasService.isFractalDisplayed ? "Masquer la fractale" : "Afficher la fractale"}}<span [innerHTML]="spaceChar"></span><mat-icon class="text-color-accent">{{canvasService.isFractalDisplayed ? "visibility_off" :
             "visibility_on"}}</mat-icon></button>
         <button mat-flat-button color="primary" class="button-gen"
-          (click)="toggleAxesDisplay()">{{canvasService.isAxesDisplayed ? "Masquer les axes" : "Afficher les axes"}}<span [innerHTML]="spaceChar"></span><mat-icon class="text-color-accent">{{canvasService.isAxesDisplayed ? "visibility_off" :
+          (click)="toggleAxesDisplay()">{{canvasService.isAxesDisplayed ? "Masquer les infos" : "Afficher les infos"}}<span [innerHTML]="spaceChar"></span><mat-icon class="text-color-accent">{{canvasService.isAxesDisplayed ? "visibility_off" :
             "visibility_on"}}</mat-icon></button>
         <button mat-flat-button color="primary" class="button-gen" id="button-settings"
           (click)="toggleSettingsDisplay()">{{canvasService.isSettingsDisplayed ? "Masquer les réglages" : "Afficher les réglages"}}<span [innerHTML]="spaceChar"></span><mat-icon class="text-color-accent">{{canvasService.isSettingsDisplayed ? "visibility_off" :

@@ -2,10 +2,10 @@ import { MathLibrary } from 'src/app/libraries/math-library';
 
 export class Color {
 
-  private red: number;
-  private green: number;
-  private blue: number;
-  private alpha: number;
+  public red: number;
+  public green: number;
+  public blue: number;
+  public alpha: number;
 
   constructor(red: number, green: number, blue: number, alpha: number) {
     this.red = Color.capValue(red);
